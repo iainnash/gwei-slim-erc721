@@ -1,0 +1,7 @@
+artifacts
+node_modules
+cache
+*.private.json
+.DS_Store
+typechain
+.env
