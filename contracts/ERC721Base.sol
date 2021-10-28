@@ -4,9 +4,8 @@ pragma solidity 0.8.6;
 import {ERC721Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import {IERC2981Upgradeable, IERC165Upgradeable} from "@openzeppelin/contracts-upgradeable/interfaces/IERC2981Upgradeable.sol";
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-
-import {SharedNFTLogic} from "./SharedNFTLogic.sol";
-import {IEditionSingleMintable} from "./IEditionSingleMintable.sol";
+import {IBaseInterface} from "./IBaseInterface.sol";
+import {ILogicContract} from "./ILogicContract.sol";
 
 /**
     This is a smart contract for handling dynamic contract minting.
@@ -21,21 +20,19 @@ contract ERC721Base is
     IERC2981Upgradeable,
     OwnableUpgradeable
 {
-
-    ILogicContract public logicController;
+    ILogicContract public logicContract;
     uint256 private minted;
     uint16 public royaltyBps;
-
 
     /**
       @dev Function to create a new edition. Can only be called by the allowed creator
            Sets the only allowed minter to the address that creates/owns the edition.
            This can be re-assigned or updated later
      */
-    function initialize(
-      ILogicContract _logicContract,
-      uint256 _royaltyBps,
-    ) public initializer {
+    function initialize(ILogicContract _logicContract, string memory _name, string memory _symbol, uint16 _royaltyBps)
+        public
+        initializer
+    {
         __ERC721_init(_name, _symbol);
         __Ownable_init();
 
@@ -54,8 +51,14 @@ contract ERC721Base is
       @param to address to send the newly minted edition to
       @dev This mints one edition to the given address by an allowed minter on the edition instance.
      */
-    function mintFromLogic(address to, uint256 tokenId) external override returns (uint256) {
-        require(msg.sender == address(logicContract), "Needs to be an allowed minter");
+    function mintFromLogic(address to, uint256 tokenId)
+        external
+        override
+    {
+        require(
+            msg.sender == address(logicContract),
+            "Needs to be an allowed minter"
+        );
         _mint(to, tokenId);
         minted += 1;
     }
@@ -64,8 +67,12 @@ contract ERC721Base is
         @param tokenId Token ID to burn
         User burn function for token id 
      */
-    function burn(uint256 tokenId) public {
-        require(_isApprovedOrOwner(_msgSender(), tokenId) || msg.sender === address(logicContract), "Not approved");
+    function burn(uint256 tokenId) public override {
+        require(
+            _isApprovedOrOwner(_msgSender(), tokenId) ||
+                msg.sender == address(logicContract),
+            "Not approved"
+        );
         _burn(tokenId);
         minted -= 1;
     }
@@ -95,7 +102,7 @@ contract ERC721Base is
         if (owner() == address(0x0)) {
             return (owner(), 0);
         }
-        return (owner(), (_salePrice * royaltyBPS) / 10_000);
+        return (owner(), (_salePrice * royaltyBps) / 10_000);
     }
 
     /**
@@ -125,6 +132,4 @@ contract ERC721Base is
             type(IERC2981Upgradeable).interfaceId == interfaceId ||
             ERC721Upgradeable.supportsInterface(interfaceId);
     }
-
-
 }

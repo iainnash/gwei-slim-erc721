@@ -2,5 +2,5 @@
 pragma solidity 0.8.6;
 
 interface ILogicContract {
-    function tokenURI(uint256 tokenId) external returns (string memory);
+    function tokenURI(uint256 tokenId) external view returns (string memory);
 }
