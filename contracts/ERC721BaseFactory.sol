@@ -17,6 +17,7 @@ contract ERC721BaseFactory {
     }
 
     function createNewChild(
+        address owner,
         string memory name,
         string memory symbol,
         uint16 _royaltyBps
@@ -28,6 +29,7 @@ contract ERC721BaseFactory {
         );
         ERC721Base(newContract).initialize(
             ILogicContract(msg.sender),
+            owner,
             name,
             symbol,
             _royaltyBps

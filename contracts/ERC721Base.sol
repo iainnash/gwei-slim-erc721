@@ -29,13 +29,17 @@ contract ERC721Base is
            Sets the only allowed minter to the address that creates/owns the edition.
            This can be re-assigned or updated later
      */
-    function initialize(ILogicContract _logicContract, string memory _name, string memory _symbol, uint16 _royaltyBps)
-        public
-        initializer
-    {
+    function initialize(
+        ILogicContract _logicContract,
+        address newOwner,
+        string memory _name,
+        string memory _symbol,
+        uint16 _royaltyBps
+    ) public initializer {
         __ERC721_init(_name, _symbol);
         __Ownable_init();
 
+        transferOwnership(newOwner);
         // Save logic contract here
         logicContract = _logicContract;
 
@@ -51,10 +55,7 @@ contract ERC721Base is
       @param to address to send the newly minted edition to
       @dev This mints one edition to the given address by an allowed minter on the edition instance.
      */
-    function mintFromLogic(address to, uint256 tokenId)
-        external
-        override
-    {
+    function mintFromLogic(address to, uint256 tokenId) external override {
         require(
             msg.sender == address(logicContract),
             "Needs to be an allowed minter"

@@ -8,7 +8,7 @@ import {ERC721BaseFactory} from './ERC721BaseFactory.sol';
 
 
 // this is the custom implementation logic and all the user has to deploy
-contract LogicContract is ILogicContract, DelegatedLogic {
+contract ChildNFT is ILogicContract, DelegatedLogic {
     using CountersUpgradeable for CountersUpgradeable.Counter;
     CountersUpgradeable.Counter public atId;
 

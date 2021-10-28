@@ -14,6 +14,7 @@ contract DelegatedLogic {
         uint16 royaltyBps
     ) {
         nftImplementation = IBaseInterface(baseFactory.createNewChild(
+            msg.sender,
             name,
             symbol,
             royaltyBps
