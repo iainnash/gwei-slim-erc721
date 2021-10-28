@@ -2,12 +2,12 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 import "@nomiclabs/hardhat-ethers";
 import { ethers, deployments } from "hardhat";
-import { ChildNFT } from "../typechain";
+import { ChildNFT, ChildNFTWithBase } from "../typechain";
 
 describe("SingleEditionMintable", () => {
   let signer: SignerWithAddress;
   let signerAddress: string;
-  let childNft: ChildNFT;
+  let childNft: ChildNFTWithBase;
 
   beforeEach(async () => {
     const { ChildNFT } = await deployments.fixture([
@@ -17,9 +17,9 @@ describe("SingleEditionMintable", () => {
     ]);
     const childNFT = await deployments.get("ChildNFT");
     childNft = (await ethers.getContractAt(
-      "ChildNFT",
+      "ChildNFTWithBase",
       ChildNFT.address
-    )) as ChildNFT;
+    )) as ChildNFTWithBase;
 
     signer = (await ethers.getSigners())[0];
     signerAddress = await signer.getAddress();
@@ -27,5 +27,6 @@ describe("SingleEditionMintable", () => {
 
   it("mints", async () => {
     await childNft.mint();
+    expect(await childNft.ownerOf(0)).to.be.equal(signerAddress)
   });
 });

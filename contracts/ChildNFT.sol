@@ -27,12 +27,12 @@ contract ChildNFT is ILogicContract, DelegatedLogic {
     }
 
     // Custom token uri if base uri is not set
-    function tokenURI(uint256 tokenId) public override view returns (string memory) {
+    function implementationTokenURI(uint256 tokenId) public override view returns (string memory) {
         return string(abi.encodePacked("https://arweave-bucket?tokenId=", tokenId));
     }
 
     // How minting works
-    function mint() external onlyOwner {
+    function mint() external onlyBaseOwner {
         nftImplementation.mintFromLogic(msg.sender, atId.current());
         atId.increment();
     }

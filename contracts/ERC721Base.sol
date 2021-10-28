@@ -120,7 +120,7 @@ contract ERC721Base is
         require(_exists(tokenId), "No token");
 
         // could do a try/catch then use the baseuri in this contract too
-        return logicContract.tokenURI(tokenId);
+        return logicContract.implementationTokenURI(tokenId);
     }
 
     function supportsInterface(bytes4 interfaceId)

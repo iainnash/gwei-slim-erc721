@@ -23,9 +23,9 @@ contract ERC721BaseFactory {
         uint16 _royaltyBps
     ) external returns (address) {
         uint256 newId = atContract.current();
-        address newContract = ClonesUpgradeable.cloneDeterministic(
-            address(baseContract),
-            bytes32(abi.encodePacked(newId))
+        address newContract = ClonesUpgradeable.clone(
+            address(baseContract)//,
+            // bytes32(abi.encodePacked(newId))
         );
         ERC721Base(newContract).initialize(
             ILogicContract(msg.sender),
