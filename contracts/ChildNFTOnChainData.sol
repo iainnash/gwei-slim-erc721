@@ -21,11 +21,11 @@ contract ChildNFTOnChainData is DelegatedLogic {
 
     function mint(string memory nftMetadata) public {
         metadataJson[currentTokenId] = nftMetadata;
-        base().mint(msg.sender, currentTokenId++);
+        _mint(msg.sender, currentTokenId++);
     }
 
     function burn(uint256 tokenId) public {
-        base().burn(tokenId);
+        _burn(tokenId);
         metadataJson[tokenId] = "";
     }
 

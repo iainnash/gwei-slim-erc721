@@ -10,6 +10,14 @@ A few common additional features for NFT series are included: 1. ERC2981 royalti
 
 However, there is no need to re-deploy the base contract since it is aware of this new ownership pattern.
 
+## How do I get started?
+
+1. Clone this repo
+2. Update your desired ChildNFT class
+3. Delete all unused ChildNFT examples and deployments
+4. Add address to deployed base ERC721Base to `hardhat.config.ts`
+4. `hardhat deploy --network rinkeby --tags ChildNFT`
+
 ## Features
 
 Things you now can get for no additional gas when writing your own NFT contracts:

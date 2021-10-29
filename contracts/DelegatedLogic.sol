@@ -5,7 +5,10 @@ import {IBaseInterface} from "./IBaseInterface.sol";
 import {ERC721Base} from "./ERC721Base.sol";
 
 contract DelegatedLogic {
+    // Important: gives storage space to ERC721Base by shifting
+    // all local contract storage down.
     uint256[100000] private ______gap;
+    // Reference to base NFT implementation
     ERC721Base public nftImplementation;
 
     constructor(
@@ -15,6 +18,12 @@ contract DelegatedLogic {
         uint16 royaltyBps
     ) {
         nftImplementation = _nftImplementation;
+        require(
+            _nftImplementation.supportsInterface(
+                type(IBaseInterface).interfaceId
+            ),
+            "!api"
+        );
         (bool success, ) = address(_nftImplementation).delegatecall(
             abi.encodeWithSignature(
                 "initialize(address,string,string,uint16)",
@@ -24,7 +33,7 @@ contract DelegatedLogic {
                 royaltyBps
             )
         );
-        require(success, "Success");
+        require(success);
     }
 
     modifier onlyOwner() {
@@ -35,7 +44,6 @@ contract DelegatedLogic {
     function base() internal view returns (ERC721Base) {
         return ERC721Base(address(this));
     }
-
 
     // helpers to mimic Openzeppelin internal functions
     function _burn(uint256 id) internal {
@@ -64,7 +72,7 @@ contract DelegatedLogic {
     }
 
     /**
-     * @dev Delegates the current call to the address returned by `_implementation()`.
+     * @dev Delegates the current call to nftImplementation.
      *
      * This function does not return to its internall call site, it will return directly to the external caller.
      */
@@ -101,5 +109,12 @@ contract DelegatedLogic {
      */
     fallback() external payable virtual {
         _fallback();
+    }
+
+    /**
+     * @dev No base NFT functions receive any value
+     */
+    receive() external payable {
+        revert();
     }
 }

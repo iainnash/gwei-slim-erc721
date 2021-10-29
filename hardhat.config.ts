@@ -27,11 +27,11 @@ const config: HardhatUserConfig = {
   },
   namedAccounts: {
     deployer: 0,
-    sharedMetadataContract: {
-      // this is from the nft-editions contract
-      1: '0x7eB947242dbF042e6388C329A614165d73548670',
-      // this is from the nft-editions contract
-      4: '0x2a3245d54E5407E276c47f0C181a22bf90c797Ce',
+    erc721base: {
+      // this is the erc721base logic contract deployment
+      // 1: '',
+      // this is the erc721base logic contract deployment
+      4: '',
     }
   },
   networks,

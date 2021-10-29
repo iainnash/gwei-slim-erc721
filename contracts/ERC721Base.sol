@@ -23,9 +23,16 @@ contract ERC721Base is
         _;
     }
 
+    uint256 public immutable deployedBlock;
+
     uint256 private minted;
     uint16 public royaltyBps;
     string private baseURI;
+
+    constructor() {
+        // Can be used to verify contract implementation is correct at address
+        deployedBlock = block.number;
+    }
 
     /**
       @dev Function to create a new edition. Can only be called by the allowed creator
@@ -157,6 +164,7 @@ contract ERC721Base is
     {
         return
             type(IERC2981Upgradeable).interfaceId == interfaceId ||
+            type(IBaseInterface).interfaceId == interfaceId ||
             ERC721Upgradeable.supportsInterface(interfaceId);
     }
 }
