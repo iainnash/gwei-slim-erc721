@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity 0.8.6;
+pragma solidity 0.8.9;
 
 import {DelegatedLogic} from "./DelegatedLogic.sol";
 import {IBaseInterface} from "./IBaseInterface.sol";
@@ -16,8 +16,10 @@ contract ChildNFT is DelegatedLogic {
         string memory name,
         string memory symbol,
         uint16 royaltyBps
-    ) DelegatedLogic(baseFactory, name, symbol, royaltyBps) {
-        nftImplementation.setBaseURI("ipfs://CID/");
+    ) DelegatedLogic(baseFactory, name, symbol, royaltyBps) {}
+
+    function setup(string memory) public onlyOwner {
+        _setBaseURI("http://asdf.cmo/");
     }
 
     // Custom token uri if base uri is not set
@@ -27,7 +29,7 @@ contract ChildNFT is DelegatedLogic {
 
     // How minting works
     function mint() external onlyOwner {
-        nftImplementation.mint(msg.sender, atId.current());
+        _mint(msg.sender, atId.current());
         atId.increment();
     }
 }

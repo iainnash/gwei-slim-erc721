@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity 0.8.6;
+pragma solidity 0.8.9;
 
 import {ERC721Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import {IERC2981Upgradeable, IERC165Upgradeable} from "@openzeppelin/contracts-upgradeable/interfaces/IERC2981Upgradeable.sol";
@@ -9,11 +9,8 @@ import {IBaseInterface} from "./IBaseInterface.sol";
 import {ClonesUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/ClonesUpgradeable.sol";
 
 /**
-    This is a smart contract for handling dynamic contract minting.
-
-    @dev This allows creators to mint a unique serial edition of the same media within a custom contract
-    @author iain nash
-    Repository: https://github.com/ourzora/nft-editions
+    This smart contract adds features and allows for a ownership only by another smart contract as fallback behavior
+    while also implementing all normal ERC721 functions as expected
 */
 contract ERC721Base is
     ERC721Upgradeable,
@@ -34,7 +31,7 @@ contract ERC721Base is
            This can be re-assigned or updated later
      */
     function initialize(
-        address _logicContract,
+        // address _logicContract,
         address newOwner,
         string memory _name,
         string memory _symbol,
@@ -46,24 +43,24 @@ contract ERC721Base is
         transferOwnership(newOwner);
 
         // Save logic contract here
-        logicContract = _logicContract;
+        // logicContract = _logicContract;
 
         royaltyBps = _royaltyBps;
     }
 
-    function isApprovedForAll(address owner, address operator)
+    function isApprovedForAll(address _owner, address operator)
         public
         view
         override
         returns (bool)
     {
         return
-            ERC721Upgradeable.isApprovedForAll(owner, operator) ||
+            ERC721Upgradeable.isApprovedForAll(_owner, operator) ||
             operator == logicContract;
     }
 
     function setBaseURI(string memory _baseURI) public override {
-        require(msg.sender == logicContract, "Only internal contract call");
+        require(msg.sender == address(this), "Only internal contract call");
         baseURI = _baseURI;
     }
 
@@ -79,7 +76,6 @@ contract ERC721Base is
       @dev This mints one edition to the given address by an allowed minter on the edition instance.
      */
     function mint(address to, uint256 tokenId) external override {
-        require(msg.sender == logicContract, "Needs to be an allowed minter");
         _mint(to, tokenId);
         minted += 1;
     }
@@ -89,11 +85,7 @@ contract ERC721Base is
         User burn function for token id 
      */
     function burn(uint256 tokenId) public override {
-        require(
-            _isApprovedOrOwner(_msgSender(), tokenId) ||
-                msg.sender == address(logicContract),
-            "Not approved"
-        );
+        require(_isApprovedOrOwner(_msgSender(), tokenId) || msg.sender == address(this), "Not allowed");
         _burn(tokenId);
         minted -= 1;
     }
@@ -169,22 +161,21 @@ contract ERC721Base is
             ERC721Upgradeable.supportsInterface(interfaceId);
     }
 
-    function createNewChild(
-        address owner,
-        string memory name,
-        string memory symbol,
-        uint16 _royaltyBps
-    ) external override returns (address) {
-        address newContract = ClonesUpgradeable.clone(address(this));
-        ERC721Base(newContract).initialize(
-            msg.sender,
-            owner,
-            name,
-            symbol,
-            _royaltyBps
-        );
-
-        emit NewContractCreated(newContract, msg.sender, name, symbol);
-        return newContract;
-    }
+    // function createNewChild(
+    //     address owner,
+    //     string memory name,
+    //     string memory symbol,
+    //     uint16 _royaltyBps
+    // ) external override returns (address) {
+        // address newContract = ClonesUpgradeable.clone(address(this));
+        // ERC721Base(newContract).initialize(
+        //     msg.sender,
+        //     owner,
+        //     name,
+        //     symbol,
+        //     _royaltyBps
+        // );
+        // emit NewContractCreated(newContract, msg.sender, name, symbol);
+        // return newContract;
+    // }
 }

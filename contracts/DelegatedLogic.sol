@@ -1,31 +1,69 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity 0.8.6;
+pragma solidity 0.8.9;
 
 import {IBaseInterface} from "./IBaseInterface.sol";
+import {ERC721Base} from "./ERC721Base.sol";
 
 contract DelegatedLogic {
-    IBaseInterface public nftImplementation;
+    uint256[100000] private ______gap;
+    address public nftImplementation;
 
     constructor(
-        IBaseInterface baseFactory,
+        IBaseInterface _nftImplementation,
         string memory name,
         string memory symbol,
         uint16 royaltyBps
     ) {
-        nftImplementation = IBaseInterface(baseFactory.createNewChild(
-            msg.sender,
-            name,
-            symbol,
-            royaltyBps
-        ));
+        nftImplementation = address(_nftImplementation);
+        (bool success, ) = nftImplementation.delegatecall(
+            abi.encodeWithSignature(
+                "initialize(address,string,string,uint16)",
+                msg.sender,
+                name,
+                symbol,
+                royaltyBps
+            )
+        );
+        require(success, "Success");
     }
 
     modifier onlyOwner() {
-        require(
-            msg.sender == nftImplementation.owner(),
-            "Not owner"
-        );
+        require(msg.sender == _owner(), "Not owner");
         _;
+    }
+
+    function _owner() internal view returns (address) {
+        return IBaseInterface(address(this)).owner();
+    }
+
+    function _burn(uint256 id) internal {
+        IBaseInterface(address(this)).burn(id);
+    }
+
+    // function _tokenURI(uint256 id) internal pure returns (string memory) {
+    //     // return IBaseInterface(address(this)).tokenURI(id);
+    //     return "";
+    // }
+
+    function _mint(address to, uint256 id) internal {
+        IBaseInterface(address(this)).mint(to, id);
+    }
+
+    function _exists(uint256 id) internal view returns (bool) {
+        return IBaseInterface(address(this)).exists(id);
+    }
+
+    function _isApprovedOrOwner(address operator, uint256 id)
+        internal
+        view
+        returns (bool)
+    {
+        return IBaseInterface(address(this)).isApprovedOrOwner(operator, id);
+    }
+
+    /// Set the base URI of the contract. Allowed only by parent contract
+    function _setBaseURI(string memory newUri) internal {
+        IBaseInterface(address(this)).setBaseURI(newUri);
     }
 
     /**
@@ -44,7 +82,7 @@ contract DelegatedLogic {
 
             // Call the implementation.
             // out and outsize are 0 because we don't know the size yet.
-            let result := call(gas(), impl, 0, 0, calldatasize(), 0, 0)
+            let result := delegatecall(gas(), impl, 0, calldatasize(), 0, 0)
 
             // Copy the returned data.
             returndatacopy(0, 0, returndatasize())

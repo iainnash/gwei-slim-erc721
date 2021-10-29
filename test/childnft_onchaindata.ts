@@ -32,5 +32,6 @@ describe("ChildNFTOnChainData", () => {
   it("mints", async () => {
     await childNft.mint(JSON.stringify({name: "amazing", description: "on-chain content"}));
     expect(await baseNft.ownerOf(0)).to.be.equal(signerAddress)
+    expect(await baseNft.name()).to.be.equal('TEST');
   });
 });
