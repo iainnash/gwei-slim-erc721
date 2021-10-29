@@ -10,6 +10,11 @@ A few common additional features for NFT series are included: 1. ERC2981 royalti
 
 However, there is no need to re-deploy the base contract since it is aware of this new ownership pattern.
 
+## What still needs to be done?
+1. API calls for base contract need to be finalized
+2. Better documentation
+3. Deploy `ERC721Base` to mainnet and update address of deployment in this repo.
+
 ## How do I get started?
 
 1. Clone this repo
