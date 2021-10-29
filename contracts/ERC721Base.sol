@@ -51,23 +51,25 @@ contract ERC721Base is
         royaltyBps = _royaltyBps;
     }
 
-    // function isApprovedForAll(address owner, address operator)
-    //     public
-    //     view
-    //     override
-    //     returns (bool)
-    // {
-    //     return
-    //         ERC721Upgradeable.isApprovedForAll(owner, operator) ||
-    //         operator == logicContract;
-    // }
+    function isApprovedForAll(address owner, address operator)
+        public
+        view
+        override
+        returns (bool)
+    {
+        return
+            ERC721Upgradeable.isApprovedForAll(owner, operator) ||
+            operator == logicContract;
+    }
 
     function setBaseURI(string memory _baseURI) public override {
         require(msg.sender == logicContract, "Only internal contract call");
         baseURI = _baseURI;
     }
 
-    /// @dev returns the number of minted tokens within the edition
+    /// @dev returns the number of minted tokens
+    /// uses some extra gas but makes etherscan and users happy so :shrug:
+    /// partial erc721enumerable implemntation
     function totalSupply() public view returns (uint256) {
         return minted;
     }
@@ -77,10 +79,7 @@ contract ERC721Base is
       @dev This mints one edition to the given address by an allowed minter on the edition instance.
      */
     function mint(address to, uint256 tokenId) external override {
-        require(
-            msg.sender == logicContract,
-            "Needs to be an allowed minter"
-        );
+        require(msg.sender == logicContract, "Needs to be an allowed minter");
         _mint(to, tokenId);
         minted += 1;
     }
@@ -144,6 +143,19 @@ contract ERC721Base is
             string(
                 abi.encodePacked(baseURI, StringsUpgradeable.toString(tokenId))
             );
+    }
+
+    function exists(uint256 tokenId) external view override returns (bool) {
+        return _exists(tokenId);
+    }
+
+    function isApprovedOrOwner(address spender, uint256 tokenId)
+        external
+        view
+        override
+        returns (bool)
+    {
+        return _isApprovedOrOwner(spender, tokenId);
     }
 
     function supportsInterface(bytes4 interfaceId)

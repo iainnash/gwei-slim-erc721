@@ -2,28 +2,27 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 import "@nomiclabs/hardhat-ethers";
 import { ethers, deployments } from "hardhat";
-import { ERC721Base, ChildNFT } from "../typechain";
+import { ERC721Base, ChildNFTOnChainData } from "../typechain";
 
-describe("ChildNFT", () => {
+describe("ChildNFTOnChainData", () => {
   let signer: SignerWithAddress;
   let signerAddress: string;
-  let childNft: ChildNFT;
+  let childNft: ChildNFTOnChainData;
   let baseNft: ERC721Base;
 
   beforeEach(async () => {
-    const { ChildNFT } = await deployments.fixture([
+    const { ChildNFTOnChainData } = await deployments.fixture([
       "ERC721Base",
-      "ERC721BaseFactory",
-      "ChildNFT",
+      "ChildNFTOnChainData",
     ]);
     // why you ask is this like so?
     childNft = (await ethers.getContractAt(
-      "ChildNFT",
-      ChildNFT.address
-    )) as ChildNFT;
+      "ChildNFTOnChainData",
+      ChildNFTOnChainData.address
+    )) as ChildNFTOnChainData;
     baseNft = (await ethers.getContractAt(
       "ERC721Base",
-      ChildNFT.address
+      ChildNFTOnChainData.address
     )) as ERC721Base;
 
     signer = (await ethers.getSigners())[0];
@@ -31,7 +30,7 @@ describe("ChildNFT", () => {
   });
 
   it("mints", async () => {
-    await childNft.mint();
+    await childNft.mint(JSON.stringify({name: "amazing", description: "on-chain content"}));
     expect(await baseNft.ownerOf(0)).to.be.equal(signerAddress)
   });
 });

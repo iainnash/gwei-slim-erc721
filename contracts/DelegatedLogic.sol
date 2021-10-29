@@ -20,7 +20,7 @@ contract DelegatedLogic {
         ));
     }
 
-    modifier onlyBaseOwner() {
+    modifier onlyOwner() {
         require(
             msg.sender == nftImplementation.owner(),
             "Not owner"

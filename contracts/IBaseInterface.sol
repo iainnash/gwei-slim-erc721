@@ -16,4 +16,7 @@ interface IBaseInterface {
         string memory symbol,
         uint16 _royaltyBps
     ) external returns (address);
+
+    function exists(uint256 tokenId) external view returns (bool);
+    function isApprovedOrOwner(address spender, uint256 tokenId) external view returns (bool);
 }

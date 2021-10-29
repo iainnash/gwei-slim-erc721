@@ -2,9 +2,9 @@
 pragma solidity 0.8.6;
 
 import {DelegatedLogic} from "./DelegatedLogic.sol";
-import {CountersUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
 import {IBaseInterface} from "./IBaseInterface.sol";
 
+import {CountersUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
 
 // this is the custom implementation logic and all the user has to deploy
 contract ChildNFT is DelegatedLogic {
@@ -26,7 +26,7 @@ contract ChildNFT is DelegatedLogic {
     // }
 
     // How minting works
-    function mint() external onlyBaseOwner {
+    function mint() external onlyOwner {
         nftImplementation.mint(msg.sender, atId.current());
         atId.increment();
     }

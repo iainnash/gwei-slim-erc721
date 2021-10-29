@@ -4,26 +4,25 @@ import "@nomiclabs/hardhat-ethers";
 import { ethers, deployments } from "hardhat";
 import { ERC721Base, ChildNFT } from "../typechain";
 
-describe("ChildNFT", () => {
+describe("ChildNFTNoBurn", () => {
   let signer: SignerWithAddress;
   let signerAddress: string;
   let childNft: ChildNFT;
   let baseNft: ERC721Base;
 
   beforeEach(async () => {
-    const { ChildNFT } = await deployments.fixture([
+    const { ChildNFTNoBurn } = await deployments.fixture([
       "ERC721Base",
-      "ERC721BaseFactory",
-      "ChildNFT",
+      "ChildNFTNoBurn",
     ]);
     // why you ask is this like so?
     childNft = (await ethers.getContractAt(
       "ChildNFT",
-      ChildNFT.address
+      ChildNFTNoBurn.address
     )) as ChildNFT;
     baseNft = (await ethers.getContractAt(
       "ERC721Base",
-      ChildNFT.address
+      ChildNFTNoBurn.address
     )) as ERC721Base;
 
     signer = (await ethers.getSigners())[0];
@@ -31,7 +30,9 @@ describe("ChildNFT", () => {
   });
 
   it("mints", async () => {
-    await childNft.mint();
     expect(await baseNft.ownerOf(0)).to.be.equal(signerAddress)
+    expect(await baseNft.ownerOf(1)).to.be.equal(signerAddress)
+    await expect(baseNft.burn(0)).to.be.revertedWith('Burn not allowed');
+    await expect(baseNft.burn(1)).to.be.revertedWith('Burn not allowed');
   });
 });
