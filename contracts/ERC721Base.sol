@@ -18,7 +18,10 @@ contract ERC721Base is
     IERC2981Upgradeable,
     OwnableUpgradeable
 {
-    event NewContractCreated(address indexed, address indexed, string, string);
+    modifier onlyInternal() {
+        require(msg.sender == address(this), "Only internal");
+        _;
+    }
 
     uint256 private minted;
     uint16 public royaltyBps;
@@ -54,8 +57,7 @@ contract ERC721Base is
             operator == address(this);
     }
 
-    function setBaseURI(string memory _baseURI) public override {
-        require(msg.sender == address(this), "Only internal contract call");
+    function setBaseURI(string memory _baseURI) public override onlyInternal {
         baseURI = _baseURI;
     }
 
@@ -70,7 +72,7 @@ contract ERC721Base is
       @param to address to send the newly minted edition to
       @dev This mints one edition to the given address by an allowed minter on the edition instance.
      */
-    function mint(address to, uint256 tokenId) external override {
+    function mint(address to, uint256 tokenId) external override onlyInternal {
         _mint(to, tokenId);
         minted += 1;
     }
@@ -80,11 +82,7 @@ contract ERC721Base is
         User burn function for token id 
      */
     function burn(uint256 tokenId) public override {
-        require(
-            _isApprovedOrOwner(_msgSender(), tokenId) ||
-                msg.sender == address(this),
-            "Not allowed"
-        );
+        require(_isApprovedOrOwner(_msgSender(), tokenId), "Not allowed");
         _burn(tokenId);
         minted -= 1;
     }
@@ -146,7 +144,9 @@ contract ERC721Base is
         override
         returns (bool)
     {
-        return _isApprovedOrOwner(spender, tokenId);
+        // contract itself has admin capabilities
+        return
+            _isApprovedOrOwner(spender, tokenId) || msg.sender == address(this);
     }
 
     function supportsInterface(bytes4 interfaceId)

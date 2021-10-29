@@ -6,16 +6,16 @@ import {ERC721Base} from "./ERC721Base.sol";
 
 contract DelegatedLogic {
     uint256[100000] private ______gap;
-    address public nftImplementation;
+    ERC721Base public nftImplementation;
 
     constructor(
-        IBaseInterface _nftImplementation,
+        ERC721Base _nftImplementation,
         string memory name,
         string memory symbol,
         uint16 royaltyBps
     ) {
-        nftImplementation = address(_nftImplementation);
-        (bool success, ) = nftImplementation.delegatecall(
+        nftImplementation = _nftImplementation;
+        (bool success, ) = address(_nftImplementation).delegatecall(
             abi.encodeWithSignature(
                 "initialize(address,string,string,uint16)",
                 msg.sender,
@@ -28,29 +28,26 @@ contract DelegatedLogic {
     }
 
     modifier onlyOwner() {
-        require(msg.sender == _owner(), "Not owner");
+        require(msg.sender == base().owner(), "Not owner");
         _;
     }
 
-    function _owner() internal view returns (address) {
-        return IBaseInterface(address(this)).owner();
+    function base() internal view returns (ERC721Base) {
+        return ERC721Base(address(this));
     }
 
+
+    // helpers to mimic Openzeppelin internal functions
     function _burn(uint256 id) internal {
-        IBaseInterface(address(this)).burn(id);
+        base().burn(id);
     }
-
-    // function _tokenURI(uint256 id) internal pure returns (string memory) {
-    //     // return IBaseInterface(address(this)).tokenURI(id);
-    //     return "";
-    // }
 
     function _mint(address to, uint256 id) internal {
-        IBaseInterface(address(this)).mint(to, id);
+        base().mint(to, id);
     }
 
     function _exists(uint256 id) internal view returns (bool) {
-        return IBaseInterface(address(this)).exists(id);
+        return base().exists(id);
     }
 
     function _isApprovedOrOwner(address operator, uint256 id)
@@ -58,12 +55,12 @@ contract DelegatedLogic {
         view
         returns (bool)
     {
-        return IBaseInterface(address(this)).isApprovedOrOwner(operator, id);
+        return base().isApprovedOrOwner(operator, id);
     }
 
     /// Set the base URI of the contract. Allowed only by parent contract
     function _setBaseURI(string memory newUri) internal {
-        IBaseInterface(address(this)).setBaseURI(newUri);
+        base().setBaseURI(newUri);
     }
 
     /**
