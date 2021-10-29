@@ -2,12 +2,12 @@ module.exports = async ({ getNamedAccounts, deployments }: any) => {
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
 
-  const baseFactoryAddress = (await deployments.get("ERC721BaseFactory")).address;
+  const baseAddress = (await deployments.get("ERC721Base")).address;
 
   await deploy("ChildNFT", {
     from: deployer,
     args: [
-      baseFactoryAddress,
+      baseAddress,
       "TEST",
       "testing",
       1000
@@ -16,4 +16,4 @@ module.exports = async ({ getNamedAccounts, deployments }: any) => {
   });
 };
 module.exports.tags = ["ChildNFT"];
-module.exports.dependencies = ["ERC721BaseFactory"]
+module.exports.dependencies = ["ERC721Base"]

@@ -2,13 +2,12 @@
 pragma solidity 0.8.6;
 
 import {IBaseInterface} from "./IBaseInterface.sol";
-import {ERC721BaseFactory} from "./ERC721BaseFactory.sol";
 
 contract DelegatedLogic {
     IBaseInterface public nftImplementation;
 
     constructor(
-        ERC721BaseFactory baseFactory,
+        IBaseInterface baseFactory,
         string memory name,
         string memory symbol,
         uint16 royaltyBps

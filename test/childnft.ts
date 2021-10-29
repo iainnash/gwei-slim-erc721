@@ -2,24 +2,28 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 import "@nomiclabs/hardhat-ethers";
 import { ethers, deployments } from "hardhat";
-import { ChildNFT, ChildNFTWithBase } from "../typechain";
+import { ERC721Base, ChildNFT } from "../typechain";
 
 describe("SingleEditionMintable", () => {
   let signer: SignerWithAddress;
   let signerAddress: string;
-  let childNft: ChildNFTWithBase;
+  let childNft: ChildNFT;
+  let baseNft: ERC721Base;
 
   beforeEach(async () => {
-    const { ChildNFT } = await deployments.fixture([
+    const { ERC721Base, ChildNFT } = await deployments.fixture([
       "ERC721Base",
       "ERC721BaseFactory",
       "ChildNFT",
     ]);
-    const childNFT = await deployments.get("ChildNFT");
     childNft = (await ethers.getContractAt(
-      "ChildNFTWithBase",
+      "ChildNFT",
       ChildNFT.address
-    )) as ChildNFTWithBase;
+    )) as ChildNFT;
+    baseNft = (await ethers.getContractAt(
+      "ERC721Base",
+      ChildNFT.address
+    )) as ERC721Base;
 
     signer = (await ethers.getSigners())[0];
     signerAddress = await signer.getAddress();
@@ -27,6 +31,6 @@ describe("SingleEditionMintable", () => {
 
   it("mints", async () => {
     await childNft.mint();
-    expect(await childNft.ownerOf(0)).to.be.equal(signerAddress)
+    expect(await baseNft.ownerOf(0)).to.be.equal(signerAddress)
   });
 });

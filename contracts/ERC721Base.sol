@@ -4,8 +4,9 @@ pragma solidity 0.8.6;
 import {ERC721Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import {IERC2981Upgradeable, IERC165Upgradeable} from "@openzeppelin/contracts-upgradeable/interfaces/IERC2981Upgradeable.sol";
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import {StringsUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
 import {IBaseInterface} from "./IBaseInterface.sol";
-import {ILogicContract} from "./ILogicContract.sol";
+import {ClonesUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/ClonesUpgradeable.sol";
 
 /**
     This is a smart contract for handling dynamic contract minting.
@@ -20,9 +21,12 @@ contract ERC721Base is
     IERC2981Upgradeable,
     OwnableUpgradeable
 {
-    ILogicContract public logicContract;
+    event NewContractCreated(address indexed, address indexed, string, string);
+
+    address public logicContract;
     uint256 private minted;
     uint16 public royaltyBps;
+    string private baseURI;
 
     /**
       @dev Function to create a new edition. Can only be called by the allowed creator
@@ -30,7 +34,7 @@ contract ERC721Base is
            This can be re-assigned or updated later
      */
     function initialize(
-        ILogicContract _logicContract,
+        address _logicContract,
         address newOwner,
         string memory _name,
         string memory _symbol,
@@ -40,10 +44,27 @@ contract ERC721Base is
         __Ownable_init();
 
         transferOwnership(newOwner);
+
         // Save logic contract here
         logicContract = _logicContract;
 
         royaltyBps = _royaltyBps;
+    }
+
+    // function isApprovedForAll(address owner, address operator)
+    //     public
+    //     view
+    //     override
+    //     returns (bool)
+    // {
+    //     return
+    //         ERC721Upgradeable.isApprovedForAll(owner, operator) ||
+    //         operator == logicContract;
+    // }
+
+    function setBaseURI(string memory _baseURI) public override {
+        require(msg.sender == logicContract, "Only internal contract call");
+        baseURI = _baseURI;
     }
 
     /// @dev returns the number of minted tokens within the edition
@@ -55,9 +76,9 @@ contract ERC721Base is
       @param to address to send the newly minted edition to
       @dev This mints one edition to the given address by an allowed minter on the edition instance.
      */
-    function mintFromLogic(address to, uint256 tokenId) external override {
+    function mint(address to, uint256 tokenId) external override {
         require(
-            msg.sender == address(logicContract),
+            msg.sender == logicContract,
             "Needs to be an allowed minter"
         );
         _mint(to, tokenId);
@@ -119,8 +140,10 @@ contract ERC721Base is
     {
         require(_exists(tokenId), "No token");
 
-        // could do a try/catch then use the baseuri in this contract too
-        return logicContract.implementationTokenURI(tokenId);
+        return
+            string(
+                abi.encodePacked(baseURI, StringsUpgradeable.toString(tokenId))
+            );
     }
 
     function supportsInterface(bytes4 interfaceId)
@@ -132,5 +155,24 @@ contract ERC721Base is
         return
             type(IERC2981Upgradeable).interfaceId == interfaceId ||
             ERC721Upgradeable.supportsInterface(interfaceId);
+    }
+
+    function createNewChild(
+        address owner,
+        string memory name,
+        string memory symbol,
+        uint16 _royaltyBps
+    ) external override returns (address) {
+        address newContract = ClonesUpgradeable.clone(address(this));
+        ERC721Base(newContract).initialize(
+            msg.sender,
+            owner,
+            name,
+            symbol,
+            _royaltyBps
+        );
+
+        emit NewContractCreated(newContract, msg.sender, name, symbol);
+        return newContract;
     }
 }
