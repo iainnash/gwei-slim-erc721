@@ -15,6 +15,11 @@ However, there is no need to re-deploy the base contract since it is aware of th
 2. Better documentation
 3. Deploy `ERC721Base` to mainnet and update address of deployment in this repo.
 
+## Current Deployments:
+
+Mainnet: Not yet
+Rinkeby: [0x3Be479A0e8D5732BE5051Bfe6833CC98722f2C1b](https://rinkeby.etherscan.io/address/0x3Be479A0e8D5732BE5051Bfe6833CC98722f2C1b)
+
 ## How do I get started?
 
 1. Clone this repo

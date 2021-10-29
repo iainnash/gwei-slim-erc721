@@ -1,19 +1,18 @@
 module.exports = async ({ getNamedAccounts, deployments }: any) => {
   const { deploy } = deployments;
-  const { deployer } = await getNamedAccounts();
+  const { deployer, erc721base } = await getNamedAccounts();
 
-  const baseAddress = (await deployments.get("ERC721Base")).address;
+  let baseAddress = erc721base;
+  // Deploy in testnet or when no base is deployed
+  if (!baseAddress) {
+    baseAddress = (await deployments.get("ERC721Base")).address;
+  }
 
   await deploy("ChildNFTOnChainData", {
     from: deployer,
-    args: [
-      baseAddress,
-      "TEST",
-      "testing",
-      1000
-    ],
+    args: [baseAddress, "TEST", "testing", 1000],
     log: true,
   });
 };
 module.exports.tags = ["ChildNFTOnChainData"];
-module.exports.dependencies = ["ERC721Base"]
+module.exports.dependencies = ["ERC721Base"];

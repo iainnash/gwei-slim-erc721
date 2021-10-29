@@ -1,8 +1,12 @@
 module.exports = async ({ getNamedAccounts, deployments }: any) => {
   const { deploy } = deployments;
-  const { deployer } = await getNamedAccounts();
+  const { deployer, erc721base } = await getNamedAccounts();
 
-  const baseAddress = (await deployments.get("ERC721Base")).address;
+  let baseAddress = erc721base;
+  // Deploy in testnet or when no base is deployed
+  if (!baseAddress) {
+    baseAddress = (await deployments.get("ERC721Base")).address;
+  }
 
   await deploy("ChildNFT", {
     from: deployer,

@@ -1,11 +1,13 @@
-module.exports = async ({ getNamedAccounts, deployments }: any) => {
+module.exports = async ({ getNamedAccounts, deployments}: any) => {
   const { deploy } = deployments;
-  const { deployer } = await getNamedAccounts();
+  const { deployer, erc721base } = await getNamedAccounts();
 
-  await deploy("ERC721Base", {
-    from: deployer,
-    args: [],
-    log: true,
-  });
+  if (!erc721base) {
+    await deploy("ERC721Base", {
+      from: deployer,
+      args: [],
+      log: true,
+    });
+  }
 };
 module.exports.tags = ["ERC721Base"];
