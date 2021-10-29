@@ -20,7 +20,6 @@ contract ERC721Base is
 {
     event NewContractCreated(address indexed, address indexed, string, string);
 
-    address public logicContract;
     uint256 private minted;
     uint16 public royaltyBps;
     string private baseURI;
@@ -31,7 +30,6 @@ contract ERC721Base is
            This can be re-assigned or updated later
      */
     function initialize(
-        // address _logicContract,
         address newOwner,
         string memory _name,
         string memory _symbol,
@@ -41,9 +39,6 @@ contract ERC721Base is
         __Ownable_init();
 
         transferOwnership(newOwner);
-
-        // Save logic contract here
-        // logicContract = _logicContract;
 
         royaltyBps = _royaltyBps;
     }
@@ -56,7 +51,7 @@ contract ERC721Base is
     {
         return
             ERC721Upgradeable.isApprovedForAll(_owner, operator) ||
-            operator == logicContract;
+            operator == address(this);
     }
 
     function setBaseURI(string memory _baseURI) public override {
@@ -85,7 +80,11 @@ contract ERC721Base is
         User burn function for token id 
      */
     function burn(uint256 tokenId) public override {
-        require(_isApprovedOrOwner(_msgSender(), tokenId) || msg.sender == address(this), "Not allowed");
+        require(
+            _isApprovedOrOwner(_msgSender(), tokenId) ||
+                msg.sender == address(this),
+            "Not allowed"
+        );
         _burn(tokenId);
         minted -= 1;
     }
@@ -160,22 +159,4 @@ contract ERC721Base is
             type(IERC2981Upgradeable).interfaceId == interfaceId ||
             ERC721Upgradeable.supportsInterface(interfaceId);
     }
-
-    // function createNewChild(
-    //     address owner,
-    //     string memory name,
-    //     string memory symbol,
-    //     uint16 _royaltyBps
-    // ) external override returns (address) {
-        // address newContract = ClonesUpgradeable.clone(address(this));
-        // ERC721Base(newContract).initialize(
-        //     msg.sender,
-        //     owner,
-        //     name,
-        //     symbol,
-        //     _royaltyBps
-        // );
-        // emit NewContractCreated(newContract, msg.sender, name, symbol);
-        // return newContract;
-    // }
 }

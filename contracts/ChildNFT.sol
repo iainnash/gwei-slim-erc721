@@ -22,11 +22,6 @@ contract ChildNFT is DelegatedLogic {
         _setBaseURI("http://asdf.cmo/");
     }
 
-    // Custom token uri if base uri is not set
-    // function tokenURI(uint256 tokenId) public override view returns (string memory) {
-    //     return string(abi.encodePacked("https://arweave-bucket?tokenId=", tokenId));
-    // }
-
     // How minting works
     function mint() external onlyOwner {
         _mint(msg.sender, atId.current());
