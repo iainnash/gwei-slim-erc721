@@ -27,13 +27,17 @@ describe("ChildNFTNoBurn", () => {
 
     signer = (await ethers.getSigners())[0];
     signerAddress = await signer.getAddress();
+    await childNft.setup();
   });
 
-  it("mints", async () => {
-    await childNft.setup();
+  it("does not allow burning from owner", async () => {
     expect(await baseNft.ownerOf(0)).to.be.equal(signerAddress)
     expect(await baseNft.ownerOf(1)).to.be.equal(signerAddress)
     await expect(baseNft.burn(0)).to.be.revertedWith('Burn not allowed');
     await expect(baseNft.burn(1)).to.be.revertedWith('Burn not allowed');
   });
+  it("does not allow burn from non-owner", async () => {
+    const [_, s2] = await ethers.getSigners();
+    await expect(baseNft.connect(s2).burn(1)).to.be.revertedWith('Burn not allowed');
+  })
 });

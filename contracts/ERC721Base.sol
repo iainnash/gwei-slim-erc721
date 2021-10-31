@@ -6,7 +6,11 @@ import {IERC2981Upgradeable, IERC165Upgradeable} from "@openzeppelin/contracts-u
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import {StringsUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
 import {IBaseInterface} from "./IBaseInterface.sol";
-import {ClonesUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/ClonesUpgradeable.sol";
+
+struct ConfigSettings {
+    uint16 royaltyBps;
+    bool hasTransferHook;
+}
 
 /**
     This smart contract adds features and allows for a ownership only by another smart contract as fallback behavior
@@ -25,8 +29,9 @@ contract ERC721Base is
 
     uint256 public immutable deployedBlock;
 
+    ConfigSettings public advancedConfig;
+
     uint256 private minted;
-    uint16 public royaltyBps;
     string private baseURI;
 
     constructor() {
@@ -43,14 +48,14 @@ contract ERC721Base is
         address newOwner,
         string memory _name,
         string memory _symbol,
-        uint16 _royaltyBps
+        ConfigSettings memory settings
     ) public initializer {
         __ERC721_init(_name, _symbol);
         __Ownable_init();
 
-        transferOwnership(newOwner);
+        advancedConfig = settings;
 
-        royaltyBps = _royaltyBps;
+        transferOwnership(newOwner);
     }
 
     function isApprovedForAll(address _owner, address operator)
@@ -62,6 +67,32 @@ contract ERC721Base is
         return
             ERC721Upgradeable.isApprovedForAll(_owner, operator) ||
             operator == address(this);
+    }
+
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 tokenId
+    ) internal override {
+        if (advancedConfig.hasTransferHook) {
+            (bool success, ) = address(this).delegatecall(
+                abi.encodeWithSignature(
+                    "_beforeTokenTransfer(address,address,uint256)",
+                    from,
+                    to,
+                    tokenId
+                )
+            );
+            // Raise error again from result if error exists
+            assembly {
+                switch success
+                // delegatecall returns 0 on error.
+                case 0 {
+                    returndatacopy(0, 0, returndatasize())
+                    revert(0, returndatasize())
+                }
+            }
+        }
     }
 
     function setBaseURI(string memory _baseURI) public override onlyInternal {
@@ -119,7 +150,7 @@ contract ERC721Base is
         if (owner() == address(0x0)) {
             return (owner(), 0);
         }
-        return (owner(), (_salePrice * royaltyBps) / 10_000);
+        return (owner(), (_salePrice * advancedConfig.royaltyBps) / 10_000);
     }
 
     /**

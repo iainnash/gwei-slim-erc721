@@ -2,7 +2,7 @@
 pragma solidity 0.8.9;
 
 import {IBaseInterface} from "./IBaseInterface.sol";
-import {ERC721Base} from "./ERC721Base.sol";
+import {ERC721Base, ConfigSettings} from "./ERC721Base.sol";
 
 contract DelegatedLogic {
     // Important: gives storage space to ERC721Base by shifting
@@ -15,7 +15,7 @@ contract DelegatedLogic {
         ERC721Base _nftImplementation,
         string memory name,
         string memory symbol,
-        uint16 royaltyBps
+        ConfigSettings memory settings
     ) {
         nftImplementation = _nftImplementation;
         require(
@@ -26,11 +26,11 @@ contract DelegatedLogic {
         );
         (bool success, ) = address(_nftImplementation).delegatecall(
             abi.encodeWithSignature(
-                "initialize(address,string,string,uint16)",
+                "initialize(address,string,string,(uint16,bool))",
                 msg.sender,
                 name,
                 symbol,
-                royaltyBps
+                settings
             )
         );
         require(success);

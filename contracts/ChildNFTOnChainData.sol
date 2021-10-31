@@ -3,7 +3,7 @@ pragma solidity 0.8.9;
 
 import {DelegatedLogic} from "./DelegatedLogic.sol";
 import {IBaseInterface} from "./IBaseInterface.sol";
-import {ERC721Base} from "./ERC721Base.sol";
+import {ERC721Base, ConfigSettings} from "./ERC721Base.sol";
 
 import {CountersUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
 
@@ -17,7 +17,14 @@ contract ChildNFTOnChainData is DelegatedLogic {
         string memory name,
         string memory symbol,
         uint16 royaltyBps
-    ) DelegatedLogic(baseFactory, name, symbol, royaltyBps) {}
+    )
+        DelegatedLogic(
+            baseFactory,
+            name,
+            symbol,
+            ConfigSettings(royaltyBps, false)
+        )
+    {}
 
     function mint(string memory nftMetadata) public {
         metadataJson[currentTokenId] = nftMetadata;
