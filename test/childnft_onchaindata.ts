@@ -15,7 +15,7 @@ describe("ChildNFTOnChainData", () => {
       "ERC721Base",
       "ChildNFTOnChainData",
     ]);
-    // why you ask is this like so?
+
     childNft = (await ethers.getContractAt(
       "ChildNFTOnChainData",
       ChildNFTOnChainData.address

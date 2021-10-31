@@ -13,10 +13,9 @@ describe("ChildNFT", () => {
   beforeEach(async () => {
     const { ChildNFT } = await deployments.fixture([
       "ERC721Base",
-      "ERC721BaseFactory",
       "ChildNFT",
     ]);
-    // why you ask is this like so?
+
     childNft = (await ethers.getContractAt(
       "ChildNFT",
       ChildNFT.address

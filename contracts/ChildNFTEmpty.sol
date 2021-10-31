@@ -23,5 +23,9 @@ contract ChildNFTEmpty is DelegatedLogic {
             symbol,
             ConfigSettings(royaltyBps, false)
         )
-    {}
+    { }
+
+    function adminMint() public onlyOwner {
+        _mint(msg.sender, 1);
+    }
 }

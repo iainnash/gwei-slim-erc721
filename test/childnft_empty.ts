@@ -2,28 +2,27 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 import "@nomiclabs/hardhat-ethers";
 import { ethers, deployments } from "hardhat";
-import { ERC721Base, ChildNFT } from "../typechain";
+import { ERC721Base, ChildNFTEmpty } from "../typechain";
 
 describe("ChildNFTEmpty", () => {
   let signer: SignerWithAddress;
   let signerAddress: string;
-  let childNft: ChildNFT;
+  let childNft: ChildNFTEmpty;
   let baseNft: ERC721Base;
 
   beforeEach(async () => {
-    const { ChildNFT } = await deployments.fixture([
+    const { ChildNFTEmpty } = await deployments.fixture([
       "ERC721Base",
-      "ERC721BaseFactory",
-      "ChildNFT",
+      "ChildNFTEmpty",
     ]);
-    // why you ask is this like so?
+
     childNft = (await ethers.getContractAt(
-      "ChildNFT",
-      ChildNFT.address
-    )) as ChildNFT;
+      "ChildNFTEmpty",
+      ChildNFTEmpty.address
+    )) as ChildNFTEmpty;
     baseNft = (await ethers.getContractAt(
       "ERC721Base",
-      ChildNFT.address
+      ChildNFTEmpty.address
     )) as ERC721Base;
 
     signer = (await ethers.getSigners())[0];
@@ -31,7 +30,17 @@ describe("ChildNFTEmpty", () => {
   });
 
   it("mints", async () => {
-    await childNft.mint();
-    expect(await baseNft.ownerOf(0)).to.be.equal(signerAddress)
+    await expect(baseNft.mint(signerAddress, 2)).to.be.revertedWith(
+      "Only internal"
+    );
+  });
+  it("burns", async () => {
+    await childNft.adminMint();
+    await baseNft.burn(1);
+  });
+  it("does not burn for non-owner", async () => {
+    const [_, s2] = await ethers.getSigners();
+    await childNft.adminMint();
+    await expect(baseNft.connect(s2).burn(1)).to.be.revertedWith("Not allowed");
   });
 });
