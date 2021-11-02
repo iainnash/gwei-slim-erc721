@@ -17,8 +17,12 @@ However, there is no need to re-deploy the base contract since it is aware of th
 
 ## Current Deployments:
 
-Mainnet: Not yet
-Rinkeby: [0x3Be479A0e8D5732BE5051Bfe6833CC98722f2C1b](https://rinkeby.etherscan.io/address/0x3Be479A0e8D5732BE5051Bfe6833CC98722f2C1b)
+- Mainnet: Not yet
+
+- Rinkeby: [0x3Be479A0e8D5732BE5051Bfe6833CC98722f2C1b](https://rinkeby.etherscan.io/address/0x3Be479A0e8D5732BE5051Bfe6833CC98722f2C1b)
+
+## Example Contract Deployed
+https://rinkeby.etherscan.io/address/0x83FA6bfdF5920816a4cF9230D32049372F6E06eA#writeContract
 
 ## How do I get started?
 

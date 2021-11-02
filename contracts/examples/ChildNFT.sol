@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.8.9;
 
-import {DelegatedLogic} from "./DelegatedLogic.sol";
-import {ERC721Base, ConfigSettings} from "./ERC721Base.sol";
+import {DelegatedLogic} from "../base/DelegatedLogic.sol";
+import {ERC721Base, ConfigSettings} from "../base/ERC721Base.sol";
 
 import {CountersUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
 
