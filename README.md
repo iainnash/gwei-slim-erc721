@@ -1,19 +1,22 @@
 # Save on ⛽️ writing custom NFT contracts
 
-This pattern embeds a factory for a slight variation on the OpenZeppelin ERC271 code.
+For most NFT projects, the base 80% of NFT code is unchanged from Opensea. A transparent factory pattern works well when the solidity used is identical between NFT contracts, but what about custom logic and overriding certain portions of the OZ standard?
+
+This proxy pattern uses a solidity fallback to call into openzeppelin contract code for any undefined functions, and when your NFT contract code calls the standard functions, it can do this because the contract call is now possible since the permissions are granted to the NFT contract itself.
+
+[YourNft] => fallback [BaseNFT]
 
 Any functions on ChildNFT override the default behavior of the standard Openzeppelin ERC721 code.
 
 The standard base contract code is loaded in using the delegatecall() pattern.
 
-A few common additional features for NFT series are included: 1. ERC2981 royalties, 2. BaseURI and tokenID string generation for collections.
+A few common additional features for NFT series are included: 1. ERC2981 royalties, 2. BaseURI and tokenID string generation for fixed-sized collections. Syntax sugar has been added for calling openzeppelin standard `_` private functions from the contract implementing DelegatedLogic itself.
 
-However, there is no need to re-deploy the base contract since it is aware of this new ownership pattern.
+Each base contract can be the logic behind many other NFT contracts saving considerable deployment gas to lower the barrier of entry to create customc reator contracts.
 
 ## What still needs to be done?
-1. API calls for base contract need to be finalized
-2. Better documentation
-3. Deploy `ERC721Base` to mainnet and update address of deployment in this repo.
+1. Better testing and security review
+2. Deploy `ERC721Base` to mainnet and update address of deployment in this repo.
 
 ## Current Deployments:
 
@@ -22,7 +25,7 @@ However, there is no need to re-deploy the base contract since it is aware of th
 - Rinkeby: [0x3Be479A0e8D5732BE5051Bfe6833CC98722f2C1b](https://rinkeby.etherscan.io/address/0x3Be479A0e8D5732BE5051Bfe6833CC98722f2C1b)
 
 ## Example Contract Deployed
-https://rinkeby.etherscan.io/address/0x83FA6bfdF5920816a4cF9230D32049372F6E06eA#writeContract
+https://rinkeby.etherscan.io/address/0x3Be479A0e8D5732BE5051Bfe6833CC98722f2C1b#writeContract
 
 ## How do I get started?
 
@@ -47,4 +50,4 @@ Things you now can get for no additional gas when writing your own NFT contracts
 ## Gotchyas
 
 1. ABIs need to be combined manually or use both contract interfaces for typechain (working on a fix soon)
-2. (potentially) Etherscan will not be show all operations available to the contract, just overridden ones.
+2. Native ERC721 functions will be shown as a "Contract Proxy" on etherscan
