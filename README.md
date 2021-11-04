@@ -25,7 +25,9 @@ Each base contract can be the logic behind many other NFT contracts saving consi
 - Rinkeby: [0x3Be479A0e8D5732BE5051Bfe6833CC98722f2C1b](https://rinkeby.etherscan.io/address/0x3Be479A0e8D5732BE5051Bfe6833CC98722f2C1b)
 
 ## Example Contract Deployed
-https://rinkeby.etherscan.io/address/0x3Be479A0e8D5732BE5051Bfe6833CC98722f2C1b#writeContract
+
+base: https://rinkeby.etherscan.io/address/0x3Be479A0e8D5732BE5051Bfe6833CC98722f2C1b
+child: https://rinkeby.etherscan.io/address/0x83FA6bfdF5920816a4cF9230D32049372F6E06eA
 
 ## How do I get started?
 
