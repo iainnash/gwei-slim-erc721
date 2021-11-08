@@ -22,7 +22,7 @@ The deployed base contract OpenZeppelin code can be used to be the underlying im
 ## Getting started
 
 1. Clone this repository (will publish on NPM after further review)
-2. Choose a contract to start off in the examples/ folder
+2. Choose a contract to start off in the [`/contracts/examples/`](/contracts/examples) folder
 3. Update the deploy folder with your contract information
 4. Set base NFT contract address in [`hardhat.config.ts`](/hardhat.config.ts)
 5. `hardhat deploy --network NETWORK --tags MY_CONTRACT` replacing YOUR_CONTRACT with your contract and NETWORK with the desired network.
