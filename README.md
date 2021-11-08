@@ -1,5 +1,10 @@
 # Save on ⛽️ writing custom NFT contracts
 
+| Contract | Deploy GWEI | % of block size |
+| :---: | :---: | :---: |
+| `OptimizedChildNFT` | **501,064** | 1.6% |
+| `ERC721Base` | 1,614,646 | 5.4%
+
 Deploy [your own](/contracts/examples/ChildNFTOnChainData.sol) on-chain metadata NFT contract for only ~500k gwei.
 
 For most NFT projects, the base 80% of NFT code is unchanged from OpenZeppelin. A transparent factory pattern works well when the implementation used is identical between NFT contracts, but what about custom logic and overriding certain portions of standard behavior? 
