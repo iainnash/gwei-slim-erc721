@@ -1,20 +1,34 @@
 # Save on ⛽️ writing custom NFT contracts
 
-For most NFT projects, the base 80% of NFT code is unchanged from Opensea. A transparent factory pattern works well when the solidity used is identical between NFT contracts, but what about custom logic and overriding certain portions of the OZ standard?
+Deploy [your own](/contracts/examples/ChildNFTOnChainData.sol) on-chain metadata NFT contract for only ~500k gwei.
 
-This proxy pattern uses a solidity fallback to call into openzeppelin contract code for any undefined functions, and when your NFT contract code calls the standard functions, it can do this because the contract call is now possible since the permissions are granted to the NFT contract itself.
+For most NFT projects, the base 80% of NFT code is unchanged from OpenZeppelin. A transparent factory pattern works well when the implementation used is identical between NFT contracts, but what about custom logic and overriding certain portions of standard behavior? 
 
-[YourNft] => fallback [BaseNFT]
+This proxy pattern uses a solidity fallback to call into OpenZeppelin contract code for any undefined functions. When your NFT contract code calls these functions, permission is granted since the contract itself is the caller.
 
-Any functions on ChildNFT override the default behavior of the standard Openzeppelin ERC721 code.
+`[YourNft] => fallback [BaseNFT]`
 
-The standard base contract code is loaded in using the delegatecall() pattern.
+Any functions on ChildNFT override the default behavior of the standard Openzeppelin ERC721 code. To add logic before or after these functions, the standard `_mint`, `_burn` and main NFT functions can be accessed by using the `base()` getter. This logic is all in `DelegatedLogic` contract.
 
-A few common additional features for NFT series are included: 1. ERC2981 royalties, 2. BaseURI and tokenID string generation for fixed-sized collections. Syntax sugar has been added for calling openzeppelin standard `_` private functions from the contract implementing DelegatedLogic itself.
+The standard base contract code is loaded in using the `delegatecall()` pattern.
 
-Each base contract can be the logic behind many other NFT contracts saving considerable deployment gas to lower the barrier of entry to create customc reator contracts.
+A few common additional features for NFT series are included:
+1. ERC2981 royalties
+2. BaseURI and tokenID string generation for fixed-sized collections. 
+3. Syntax sugar has been added for calling openzeppelin standard `_` private functions from the contract implementing DelegatedLogic itself.
+
+The deployed base contract OpenZeppelin code can be used to be the underlying implementation for many, many NFT contracts.
+
+## Getting started
+
+1. Clone this repository (will publish on NPM after further review)
+2. Choose a contract to start off in the examples/ folder
+3. Update the deploy folder with your contract information
+4. Set base NFT contract address in [`hardhat.config.ts`](/hardhat.config.ts)
+5. `hardhat deploy --network NETWORK --tags MY_CONTRACT` replacing YOUR_CONTRACT with your contract and NETWORK with the desired network.
 
 ## What still needs to be done?
+
 1. Better testing and security review
 2. Deploy `ERC721Base` to mainnet and update address of deployment in this repo.
 
@@ -26,8 +40,9 @@ Each base contract can be the logic behind many other NFT contracts saving consi
 
 ## Example Contract Deployed
 
-base: https://rinkeby.etherscan.io/address/0x3Be479A0e8D5732BE5051Bfe6833CC98722f2C1b
-child: https://rinkeby.etherscan.io/address/0x83FA6bfdF5920816a4cF9230D32049372F6E06eA
+- child implementation: https://rinkeby.etherscan.io/address/0x83FA6bfdF5920816a4cF9230D32049372F6E06eA
+
+- base: https://rinkeby.etherscan.io/address/0x3Be479A0e8D5732BE5051Bfe6833CC98722f2C1b
 
 ## How do I get started?
 
