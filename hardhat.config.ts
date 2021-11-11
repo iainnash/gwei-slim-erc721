@@ -6,12 +6,8 @@ import '@nomiclabs/hardhat-ethers'
 import '@nomiclabs/hardhat-waffle'
 import "@nomiclabs/hardhat-etherscan";
 import { HardhatUserConfig } from "hardhat/config";
-import dotenv from 'dotenv';
-
 import networks from './networks';
-
-// Setup env from .env file if present
-dotenv.config();
+import "./setup-env";
 
 /**
  * @type import('hardhat/config').HardhatUserConfig
