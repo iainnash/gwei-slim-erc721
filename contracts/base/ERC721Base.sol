@@ -160,6 +160,7 @@ contract ERC721Base is
         override
         returns (address receiver, uint256 royaltyAmount)
     {
+        // If ownership is revoked, don't set royalties.
         if (owner() == address(0x0)) {
             return (owner(), 0);
         }
