@@ -17,7 +17,7 @@ interface IBaseInterface {
     function mint(address to, uint256 tokenId) external;
 
     /// Set the base URI of the contract. Allowed only by parent contract
-    function setBaseURI(string memory) external;
+    function setBaseURI(string memory, string memory) external;
 
     // /* Exposes common internal read features for public use */
 

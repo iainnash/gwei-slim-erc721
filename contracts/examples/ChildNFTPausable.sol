@@ -17,7 +17,19 @@ contract ChildNFTPausable is DelegatedLogic {
         ERC721Base baseFactory,
         string memory name,
         string memory symbol
-    ) DelegatedLogic(baseFactory, name, symbol, ConfigSettings(10, true)) {}
+    )
+        DelegatedLogic(
+            baseFactory,
+            name,
+            symbol,
+            ConfigSettings({
+                royaltyBps: 1000,
+                uriBase: "",
+                uriExtension: "",
+                hasTransferHook: true
+            })
+        )
+    {}
 
     modifier onlyUnpaused() {
         require(!paused, "Paused");

@@ -21,12 +21,16 @@ contract ChildNFTNoBurn is DelegatedLogic {
             baseFactory,
             name,
             symbol,
-            ConfigSettings(royaltyBps, false)
+            ConfigSettings({
+                royaltyBps: royaltyBps,
+                uriBase: 'http://non-burnable.api/nft/',
+                uriExtension: '.json',
+                hasTransferHook: false
+            })
         )
     {}
 
-    function setup() public onlyOwner {
-        _setBaseURI("http://non-burnable.api/");
+    function initialMint() public onlyOwner {
         _mint(msg.sender, 0);
         _mint(msg.sender, 1);
         _mint(msg.sender, 2);

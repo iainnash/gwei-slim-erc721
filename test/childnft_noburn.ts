@@ -27,7 +27,7 @@ describe("ChildNFTNoBurn", () => {
 
     signer = (await ethers.getSigners())[0];
     signerAddress = await signer.getAddress();
-    await childNft.setup();
+    await childNft.initialMint();
   });
 
   it("does not allow burning from owner", async () => {

@@ -26,7 +26,7 @@ contract DelegatedLogic {
         );
         (bool success, ) = address(_nftImplementation).delegatecall(
             abi.encodeWithSignature(
-                "initialize(address,string,string,(uint16,bool))",
+                "initialize(address,string,string,(uint16,string,string,bool))",
                 msg.sender,
                 name,
                 symbol,
@@ -67,8 +67,8 @@ contract DelegatedLogic {
     }
 
     /// Set the base URI of the contract. Allowed only by parent contract
-    function _setBaseURI(string memory newUri) internal {
-        base().setBaseURI(newUri);
+    function _setBaseURI(string memory newUri, string memory newExtension) internal {
+        base().setBaseURI(newUri, newExtension);
     }
 
     /**

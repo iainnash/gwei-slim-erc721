@@ -21,7 +21,12 @@ contract ChildNFTEmpty is DelegatedLogic {
             baseFactory,
             name,
             symbol,
-            ConfigSettings(royaltyBps, false)
+            ConfigSettings({
+                royaltyBps: royaltyBps,
+                uriBase: '',
+                uriExtension: '',
+                hasTransferHook: false
+            })
         )
     { }
 

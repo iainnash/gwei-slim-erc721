@@ -9,6 +9,8 @@ import {IBaseInterface} from "./IBaseInterface.sol";
 
 struct ConfigSettings {
     uint16 royaltyBps;
+    string uriBase;
+    string uriExtension;
     bool hasTransferHook;
 }
 
@@ -30,9 +32,7 @@ contract ERC721Base is
     uint256 public immutable deployedBlock;
 
     ConfigSettings public advancedConfig;
-
     uint256 private minted;
-    string private baseURI;
 
     constructor() {
         // Can be used to verify contract implementation is correct at address
@@ -95,8 +95,9 @@ contract ERC721Base is
         }
     }
 
-    function setBaseURI(string memory _baseURI) public override onlyInternal {
-        baseURI = _baseURI;
+    function setBaseURI(string memory uriBase, string memory uriExtension) public override onlyInternal {
+        advancedConfig.uriBase = uriBase;
+        advancedConfig.uriExtension = uriExtension;
     }
 
     /// @dev returns the number of minted tokens
@@ -168,7 +169,7 @@ contract ERC721Base is
 
         return
             string(
-                abi.encodePacked(baseURI, StringsUpgradeable.toString(tokenId))
+                abi.encodePacked(advancedConfig.uriBase, StringsUpgradeable.toString(tokenId), advancedConfig.uriExtension)
             );
     }
 

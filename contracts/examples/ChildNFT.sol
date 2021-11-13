@@ -21,13 +21,14 @@ contract ChildNFT is DelegatedLogic {
             baseFactory,
             name,
             symbol,
-            ConfigSettings(royaltyBps, false)
+            ConfigSettings({
+                royaltyBps: royaltyBps,
+                uriBase: 'http://uri-test.com/',
+                uriExtension: '',
+                hasTransferHook: false
+            })
         )
     {}
-
-    function setup(string memory) public onlyOwner {
-        base().setBaseURI("http://asdf.cmo/");
-    }
 
     // How minting works
     function mint() external onlyOwner {
