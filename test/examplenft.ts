@@ -2,27 +2,27 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 import "@nomiclabs/hardhat-ethers";
 import { ethers, deployments } from "hardhat";
-import { ERC721Base, ChildNFT } from "../typechain";
+import { ERC721Base, ExampleNFT } from "../typechain";
 
-describe("ChildNFT", () => {
+describe("ExampleNFT", () => {
   let signer: SignerWithAddress;
   let signerAddress: string;
-  let childNft: ChildNFT;
+  let childNft: ExampleNFT;
   let baseNft: ERC721Base;
 
   beforeEach(async () => {
-    const { ChildNFT } = await deployments.fixture([
+    const { ExampleNFT } = await deployments.fixture([
       "ERC721Base",
-      "ChildNFT",
+      "ExampleNFT",
     ]);
 
     childNft = (await ethers.getContractAt(
-      "ChildNFT",
-      ChildNFT.address
-    )) as ChildNFT;
+      "ExampleNFT",
+      ExampleNFT.address
+    )) as ExampleNFT;
     baseNft = (await ethers.getContractAt(
       "ERC721Base",
-      ChildNFT.address
+      ExampleNFT.address
     )) as ERC721Base;
 
     signer = (await ethers.getSigners())[0];

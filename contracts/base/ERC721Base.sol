@@ -5,6 +5,7 @@ import {ERC721Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC72
 import {IERC2981Upgradeable, IERC165Upgradeable} from "@openzeppelin/contracts-upgradeable/interfaces/IERC2981Upgradeable.sol";
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import {StringsUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
+import {CountersUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
 import {IBaseInterface} from "./IBaseInterface.sol";
 
 struct ConfigSettings {
@@ -24,6 +25,9 @@ contract ERC721Base is
     IERC2981Upgradeable,
     OwnableUpgradeable
 {
+    using CountersUpgradeable for CountersUpgradeable.Counter;
+    // Minted counter for totalSupply()
+    CountersUpgradeable.Counter private mintedCounter;
 
     modifier onlyInternal() {
         require(msg.sender == address(this), "Only internal");
@@ -34,9 +38,6 @@ contract ERC721Base is
     uint256 public immutable deployedBlock;
 
     ConfigSettings public advancedConfig;
-
-    /// Simple counter for totalSupply() call
-    uint256 private minted;
 
     /// Constructor called once when the base contract is deployed
     constructor() {
@@ -116,7 +117,7 @@ contract ERC721Base is
     /// uses some extra gas but makes etherscan and users happy so :shrug:
     /// partial erc721enumerable implemntation
     function totalSupply() public view returns (uint256) {
-        return minted;
+        return mintedCounter.current();
     }
 
     /**
@@ -125,7 +126,7 @@ contract ERC721Base is
      */
     function mint(address to, uint256 tokenId) external override onlyInternal {
         _mint(to, tokenId);
-        minted += 1;
+        mintedCounter.increment();
     }
 
     /**
@@ -135,7 +136,7 @@ contract ERC721Base is
     function burn(uint256 tokenId) public override {
         require(_isApprovedOrOwner(_msgSender(), tokenId), "Not allowed");
         _burn(tokenId);
-        minted -= 1;
+        mintedCounter.decrement();
     }
 
     /**

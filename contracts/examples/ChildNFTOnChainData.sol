@@ -1,16 +1,17 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.8.9;
 
-import {DelegatedLogic} from "../base/DelegatedLogic.sol";
+import {DelegatedNFTLogic} from "../base/DelegatedNFTLogic.sol";
 import {IBaseInterface} from "../base/IBaseInterface.sol";
 import {ERC721Base, ConfigSettings} from "../base/ERC721Base.sol";
 
 import {CountersUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
 
 /// This custom NFT contract stores additional metadata to use for tokenURI
-contract ChildNFTOnChainData is DelegatedLogic {
+contract ChildNFTOnChainData is DelegatedNFTLogic {
     uint256 public currentTokenId;
     mapping(uint256 => string) metadataJson;
+    string testing = "super long string testing memory testing memory";
 
     constructor(
         ERC721Base baseFactory,
@@ -18,14 +19,14 @@ contract ChildNFTOnChainData is DelegatedLogic {
         string memory symbol,
         uint16 royaltyBps
     )
-        DelegatedLogic(
+        DelegatedNFTLogic(
             baseFactory,
             name,
             symbol,
             ConfigSettings({
                 royaltyBps: royaltyBps,
-                uriBase: '',
-                uriExtension: '',
+                uriBase: "",
+                uriExtension: "",
                 hasTransferHook: false
             })
         )
@@ -39,6 +40,10 @@ contract ChildNFTOnChainData is DelegatedLogic {
     function burn(uint256 tokenId) public {
         _burn(tokenId);
         metadataJson[tokenId] = "";
+    }
+
+    function getTesting() public view returns (string memory) {
+        return testing;
     }
 
     function tokenURI(uint256 tokenId) external view returns (string memory) {

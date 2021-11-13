@@ -8,7 +8,7 @@ module.exports = async ({ getNamedAccounts, deployments }: any) => {
     baseAddress = (await deployments.get("ERC721Base")).address;
   }
 
-  await deploy("ChildNFT", {
+  await deploy("ExampleNFT", {
     from: deployer,
     args: [
       baseAddress,
@@ -19,5 +19,5 @@ module.exports = async ({ getNamedAccounts, deployments }: any) => {
     log: true,
   });
 };
-module.exports.tags = ["ChildNFT"];
+module.exports.tags = ["ExampleNFT"];
 module.exports.dependencies = ["ERC721Base"]

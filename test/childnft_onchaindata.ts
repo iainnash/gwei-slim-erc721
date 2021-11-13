@@ -33,5 +33,9 @@ describe("ChildNFTOnChainData", () => {
     await childNft.mint(JSON.stringify({name: "amazing", description: "on-chain content"}));
     expect(await baseNft.ownerOf(0)).to.be.equal(signerAddress)
     expect(await baseNft.name()).to.be.equal('TEST');
+    await childNft.mint(JSON.stringify({name: "amazing", description: "on-chain content"}));
+    await childNft.mint(JSON.stringify({name: "amazing", description: "on-chain content"}));
+    await baseNft.setApprovalForAll(ethers.constants.AddressZero, true);
+    expect(await childNft.getTesting()).to.be.equal('super long string testing memory testing memory');
   });
 });

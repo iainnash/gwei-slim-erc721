@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.8.9;
 
-import {DelegatedLogic} from "../base/DelegatedLogic.sol";
+import {DelegatedNFTLogic} from "../base/DelegatedNFTLogic.sol";
 import {IBaseInterface} from "../base/IBaseInterface.sol";
 import {ERC721Base, ConfigSettings} from "../base/ERC721Base.sol";
 
@@ -10,25 +10,25 @@ import {CountersUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/Cou
 /// This custom NFT contract is straight-forward
 ///   except for disabling the burn function by override
 /// This uses the openzeppelin style solidity contract abi
-contract ChildNFTEmpty is DelegatedLogic {
+contract ChildNFTEmpty is DelegatedNFTLogic {
     constructor(
         ERC721Base baseFactory,
         string memory name,
         string memory symbol,
         uint16 royaltyBps
     )
-        DelegatedLogic(
+        DelegatedNFTLogic(
             baseFactory,
             name,
             symbol,
             ConfigSettings({
                 royaltyBps: royaltyBps,
-                uriBase: '',
-                uriExtension: '',
+                uriBase: "",
+                uriExtension: "",
                 hasTransferHook: false
             })
         )
-    { }
+    {}
 
     function adminMint() public onlyOwner {
         _mint(msg.sender, 1);

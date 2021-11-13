@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.8.9;
 
-import {DelegatedLogic} from "../base/DelegatedLogic.sol";
+import {DelegatedNFTLogic} from "../base/DelegatedNFTLogic.sol";
 import {ERC721Base, ConfigSettings} from "../base/ERC721Base.sol";
 
 import {CountersUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
 
 // this is the custom implementation logic and all the user has to deploy
-contract ChildNFT is DelegatedLogic {
+contract ExampleNFT is DelegatedNFTLogic {
     using CountersUpgradeable for CountersUpgradeable.Counter;
     CountersUpgradeable.Counter public atId;
 
@@ -17,7 +17,7 @@ contract ChildNFT is DelegatedLogic {
         string memory symbol,
         uint16 royaltyBps
     )
-        DelegatedLogic(
+        DelegatedNFTLogic(
             baseFactory,
             name,
             symbol,

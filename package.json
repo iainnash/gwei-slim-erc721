@@ -1,7 +1,7 @@
 {
-  "name": "nft-factory-contracts",
+  "name": "gwei-slim-nft-contracts",
   "version": "1.0.0",
-  "description": "NFT Factory Contracts",
+  "description": "GWEI Slim NFT Base Contracts",
   "main": "index.js",
   "author": "iain nash",
   "license": "MIT",
