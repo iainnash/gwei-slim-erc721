@@ -8,6 +8,7 @@ contract DelegatedLogic {
     // Reference to base NFT implementation
     ERC721Base public nftImplementation;
 
+    /// Constructor that sets up the
     constructor(
         ERC721Base _nftImplementation,
         string memory name,
@@ -15,12 +16,12 @@ contract DelegatedLogic {
         ConfigSettings memory settings
     ) {
         nftImplementation = _nftImplementation;
-        require(
-            _nftImplementation.supportsInterface(
-                type(IBaseInterface).interfaceId
-            ),
-            "!api"
-        );
+        /// Removed for gas saving reasons, the check below implictly accomplishes this
+        // require(
+        //     _nftImplementation.supportsInterface(
+        //         type(IBaseInterface).interfaceId
+        //     )
+        // );
         (bool success, ) = address(_nftImplementation).delegatecall(
             abi.encodeWithSignature(
                 "initialize(address,string,string,(uint16,string,string,bool))",
@@ -33,11 +34,13 @@ contract DelegatedLogic {
         require(success);
     }
 
+    /// OnlyOwner implemntation that proxies to base ownable contract for info
     modifier onlyOwner() {
         require(msg.sender == base().owner(), "Not owner");
         _;
     }
 
+    /// Getter to return the base implementation contract to call methods from
     function base() internal view returns (ERC721Base) {
         return ERC721Base(address(this));
     }
@@ -75,9 +78,11 @@ contract DelegatedLogic {
     }
 
     /// Sets the base URI of the contract. Allowed only by parent contract
-    /// @param newUri new uri base (http://URI) followed by number string of nft followed by extension string 
+    /// @param newUri new uri base (http://URI) followed by number string of nft followed by extension string
     /// @param newExtension optional uri extension
-    function _setBaseURI(string memory newUri, string memory newExtension) internal {
+    function _setBaseURI(string memory newUri, string memory newExtension)
+        internal
+    {
         base().setBaseURI(newUri, newExtension);
     }
 
