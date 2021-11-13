@@ -5,9 +5,6 @@ import {IBaseInterface} from "./IBaseInterface.sol";
 import {ERC721Base, ConfigSettings} from "./ERC721Base.sol";
 
 contract DelegatedLogic {
-    // Important: gives storage space to ERC721Base by shifting
-    // all local contract storage down.
-    uint256[100000] private ______gap;
     // Reference to base NFT implementation
     ERC721Base public nftImplementation;
 
@@ -46,18 +43,29 @@ contract DelegatedLogic {
     }
 
     // helpers to mimic Openzeppelin internal functions
+
+    /// Internal burn function, only accessible from within contract
+    /// @param id nft id to burn
     function _burn(uint256 id) internal {
         base().burn(id);
     }
 
+    /// Internal mint function, only accessible from within contract
+    /// @param to address to mint NFT to
+    /// @param id nft id to mint
     function _mint(address to, uint256 id) internal {
         base().mint(to, id);
     }
 
+    /// Internal exists function to determine if fn exists
+    /// @param id nft id to check if exists
     function _exists(uint256 id) internal view returns (bool) {
         return base().exists(id);
     }
 
+    /// Internal getter for approved or owner for a given operator
+    /// @param operator address of operator to check
+    /// @param id id of nft to check for
     function _isApprovedOrOwner(address operator, uint256 id)
         internal
         view
@@ -66,7 +74,9 @@ contract DelegatedLogic {
         return base().isApprovedOrOwner(operator, id);
     }
 
-    /// Set the base URI of the contract. Allowed only by parent contract
+    /// Sets the base URI of the contract. Allowed only by parent contract
+    /// @param newUri new uri base (http://URI) followed by number string of nft followed by extension string 
+    /// @param newExtension optional uri extension
     function _setBaseURI(string memory newUri, string memory newExtension) internal {
         base().setBaseURI(newUri, newExtension);
     }
@@ -107,7 +117,7 @@ contract DelegatedLogic {
      * @dev Fallback function that delegates calls to the address returned by `_implementation()`. Will run if no other
      * function in the contract matches the call data.
      */
-    fallback() external payable virtual {
+    fallback() external virtual {
         _fallback();
     }
 
