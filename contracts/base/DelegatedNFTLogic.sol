@@ -1,16 +1,15 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.8.9;
 
-import {IBaseInterface} from "./IBaseInterface.sol";
-import {ERC721Base, ConfigSettings} from "./ERC721Base.sol";
+import {IBaseERC721Interface, ConfigSettings} from "./ERC721Base.sol";
 
 contract DelegatedNFTLogic {
     // Reference to base NFT implementation
-    IBaseInterface public nftImplementation;
+    IBaseERC721Interface public nftImplementation;
 
     /// Constructor that sets up the
     constructor(
-        IBaseInterface _nftImplementation,
+        IBaseERC721Interface _nftImplementation,
         string memory name,
         string memory symbol,
         ConfigSettings memory settings
@@ -19,7 +18,7 @@ contract DelegatedNFTLogic {
         /// Removed for gas saving reasons, the check below implictly accomplishes this
         // require(
         //     _nftImplementation.supportsInterface(
-        //         type(IBaseInterface).interfaceId
+        //         type(IBaseERC721Interface).interfaceId
         //     )
         // );
         (bool success, ) = address(_nftImplementation).delegatecall(
@@ -42,8 +41,8 @@ contract DelegatedNFTLogic {
 
     /// Getter to return the base implementation contract to call methods from
     /// Don't expose base contract to parent due to need to call private internal base functions
-    function base() private view returns (ERC721Base) {
-        return ERC721Base(address(this));
+    function base() private view returns (IBaseERC721Interface) {
+        return IBaseERC721Interface(address(this));
     }
 
     // helpers to mimic Openzeppelin internal functions

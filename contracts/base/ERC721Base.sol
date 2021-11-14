@@ -6,7 +6,7 @@ import {IERC2981Upgradeable, IERC165Upgradeable} from "@openzeppelin/contracts-u
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import {StringsUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
 import {CountersUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
-import {IBaseInterface} from "./IBaseInterface.sol";
+import {IBaseERC721Interface} from "./IBaseERC721Interface.sol";
 
 struct ConfigSettings {
     uint16 royaltyBps;
@@ -21,7 +21,7 @@ struct ConfigSettings {
 */
 contract ERC721Base is
     ERC721Upgradeable,
-    IBaseInterface,
+    IBaseERC721Interface,
     IERC2981Upgradeable,
     OwnableUpgradeable
 {
@@ -174,7 +174,12 @@ contract ERC721Base is
     }
 
     /// internal alias for overrides
-    function __owner() public view override(IBaseInterface) returns (address) {
+    function __owner()
+        public
+        view
+        override(IBaseERC721Interface)
+        returns (address)
+    {
         return owner();
     }
 
@@ -226,12 +231,7 @@ contract ERC721Base is
     }
 
     /// Exposing token exists check for base contract
-    function __exists(uint256 tokenId)
-        external
-        view
-        override
-        returns (bool)
-    {
+    function __exists(uint256 tokenId) external view override returns (bool) {
         return _exists(tokenId);
     }
 
@@ -256,7 +256,7 @@ contract ERC721Base is
     {
         return
             type(IERC2981Upgradeable).interfaceId == interfaceId ||
-            type(IBaseInterface).interfaceId == interfaceId ||
+            type(IBaseERC721Interface).interfaceId == interfaceId ||
             ERC721Upgradeable.supportsInterface(interfaceId);
     }
 }

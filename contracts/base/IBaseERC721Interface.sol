@@ -3,7 +3,7 @@ pragma solidity 0.8.9;
 
 /// Additional features and functions assigned to the
 /// Base721 contract for hooks and overrides
-interface IBaseInterface {
+interface IBaseERC721Interface {
     /*
      Exposing common NFT internal functionality for base contract overrides
      To save gas and make API cleaner this is only for new functionality not exposed in
