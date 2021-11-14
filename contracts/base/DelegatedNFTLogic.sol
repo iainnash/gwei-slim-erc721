@@ -41,7 +41,8 @@ contract DelegatedNFTLogic {
     }
 
     /// Getter to return the base implementation contract to call methods from
-    function base() internal view returns (ERC721Base) {
+    /// Don't expose base contract to parent due to need to call private internal base functions
+    function base() private view returns (ERC721Base) {
         return ERC721Base(address(this));
     }
 

@@ -76,13 +76,15 @@ contract ERC721Base is
             operator == address(this);
     }
 
+    /// internal getter for approval by all
+    /// When isApprovedForAll is overridden, this can be used to call original impl
     function __isApprovedForAll(address _owner, address operator)
         public
         view
         override
         returns (bool)
     {
-        return ERC721Upgradeable.isApprovedForAll(_owner, operator);
+        return isApprovedForAll(_owner, operator);
     }
 
     /// Hook that when enabled manually calls _beforeTokenTransfer on
