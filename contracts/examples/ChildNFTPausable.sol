@@ -2,8 +2,7 @@
 pragma solidity 0.8.9;
 
 import {DelegatedNFTLogic} from "../base/DelegatedNFTLogic.sol";
-import {IBaseInterface} from "../base/IBaseInterface.sol";
-import {ERC721Base, ConfigSettings} from "../base/ERC721Base.sol";
+import {IBaseInterface, ConfigSettings} from "../base/ERC721Base.sol";
 
 import {CountersUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
 
@@ -14,7 +13,7 @@ contract ChildNFTPausable is DelegatedNFTLogic {
     bool paused;
 
     constructor(
-        ERC721Base baseFactory,
+        IBaseInterface baseFactory,
         string memory name,
         string memory symbol
     )

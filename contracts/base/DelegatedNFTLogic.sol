@@ -6,11 +6,11 @@ import {ERC721Base, ConfigSettings} from "./ERC721Base.sol";
 
 contract DelegatedNFTLogic {
     // Reference to base NFT implementation
-    ERC721Base public nftImplementation;
+    IBaseInterface public nftImplementation;
 
     /// Constructor that sets up the
     constructor(
-        ERC721Base _nftImplementation,
+        IBaseInterface _nftImplementation,
         string memory name,
         string memory symbol,
         ConfigSettings memory settings
@@ -36,7 +36,7 @@ contract DelegatedNFTLogic {
 
     /// OnlyOwner implemntation that proxies to base ownable contract for info
     modifier onlyOwner() {
-        require(msg.sender == base().owner(), "Not owner");
+        require(msg.sender == base().__owner(), "Not owner");
         _;
     }
 
