@@ -1,23 +1,23 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.8.9;
 
-import {DelegatedNFTLogic} from "../base/DelegatedNFTLogic.sol";
-import {ERC721Base, ConfigSettings} from "../base/ERC721Base.sol";
+import {ERC721Delegated} from "../base/ERC721Delegated.sol";
+import {IBaseERC721Interface, ConfigSettings} from "../base/ERC721Base.sol";
 
 import {CountersUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
 
 // this is the custom implementation logic and all the user has to deploy
-contract ExampleNFT is DelegatedNFTLogic {
+contract ExampleNFT is ERC721Delegated {
     using CountersUpgradeable for CountersUpgradeable.Counter;
     CountersUpgradeable.Counter public atId;
 
     constructor(
-        ERC721Base baseFactory,
+        IBaseERC721Interface baseFactory,
         string memory name,
         string memory symbol,
         uint16 royaltyBps
     )
-        DelegatedNFTLogic(
+        ERC721Delegated(
             baseFactory,
             name,
             symbol,
@@ -32,7 +32,7 @@ contract ExampleNFT is DelegatedNFTLogic {
 
     // How minting works
     function mint() external onlyOwner {
-        base().mint(msg.sender, atId.current());
+        _mint(msg.sender, atId.current());
         atId.increment();
     }
 }

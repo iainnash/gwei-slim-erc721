@@ -1,25 +1,24 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.8.9;
 
-import {DelegatedNFTLogic} from "../base/DelegatedNFTLogic.sol";
-import {IBaseInterface} from "../base/IBaseInterface.sol";
-import {ERC721Base, ConfigSettings} from "../base/ERC721Base.sol";
+import {ERC721Delegated} from "../base/ERC721Delegated.sol";
+import {IBaseERC721Interface, ConfigSettings} from "../base/ERC721Base.sol";
 
 import {CountersUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
 
 /// This custom NFT contract stores additional metadata to use for tokenURI
-contract ChildNFTOnChainData is DelegatedNFTLogic {
+contract ChildNFTOnChainData is ERC721Delegated {
     uint256 public currentTokenId;
     mapping(uint256 => string) metadataJson;
     string testing = "super long string testing memory testing memory";
 
     constructor(
-        ERC721Base baseFactory,
+        IBaseERC721Interface baseFactory,
         string memory name,
         string memory symbol,
         uint16 royaltyBps
     )
-        DelegatedNFTLogic(
+        ERC721Delegated(
             baseFactory,
             name,
             symbol,
