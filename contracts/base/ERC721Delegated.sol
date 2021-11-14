@@ -3,7 +3,7 @@ pragma solidity 0.8.9;
 
 import {IBaseERC721Interface, ConfigSettings} from "./ERC721Base.sol";
 
-contract DelegatedNFTLogic {
+contract ERC721Delegated {
     // Reference to base NFT implementation
     IBaseERC721Interface public nftImplementation;
 
