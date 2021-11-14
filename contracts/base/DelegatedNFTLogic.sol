@@ -50,20 +50,20 @@ contract DelegatedNFTLogic {
     /// Internal burn function, only accessible from within contract
     /// @param id nft id to burn
     function _burn(uint256 id) internal {
-        base().burn(id);
+        base().__burn(id);
     }
 
     /// Internal mint function, only accessible from within contract
     /// @param to address to mint NFT to
     /// @param id nft id to mint
     function _mint(address to, uint256 id) internal {
-        base().mint(to, id);
+        base().__mint(to, id);
     }
 
     /// Internal exists function to determine if fn exists
     /// @param id nft id to check if exists
     function _exists(uint256 id) internal view returns (bool) {
-        return base().exists(id);
+        return base().__exists(id);
     }
 
     /// Internal getter for approved or owner for a given operator
@@ -74,7 +74,7 @@ contract DelegatedNFTLogic {
         view
         returns (bool)
     {
-        return base().isApprovedOrOwner(operator, id);
+        return base().__isApprovedOrOwner(operator, id);
     }
 
     /// Sets the base URI of the contract. Allowed only by parent contract
@@ -83,7 +83,7 @@ contract DelegatedNFTLogic {
     function _setBaseURI(string memory newUri, string memory newExtension)
         internal
     {
-        base().setBaseURI(newUri, newExtension);
+        base().__setBaseURI(newUri, newExtension);
     }
 
     /**

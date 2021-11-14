@@ -30,7 +30,7 @@ describe("ChildNFTEmpty", () => {
   });
 
   it("mints", async () => {
-    await expect(baseNft.mint(signerAddress, 2)).to.be.revertedWith(
+    await expect(baseNft.__mint(signerAddress, 1)).to.be.revertedWith(
       "Only internal"
     );
   });

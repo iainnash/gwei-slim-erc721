@@ -32,7 +32,7 @@ contract ExampleNFT is DelegatedNFTLogic {
 
     // How minting works
     function mint() external onlyOwner {
-        base().mint(msg.sender, atId.current());
+        _mint(msg.sender, atId.current());
         atId.increment();
     }
 }

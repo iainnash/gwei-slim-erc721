@@ -76,6 +76,15 @@ contract ERC721Base is
             operator == address(this);
     }
 
+    function __isApprovedForAll(address _owner, address operator)
+        public
+        view
+        override
+        returns (bool)
+    {
+        return ERC721Upgradeable.isApprovedForAll(_owner, operator);
+    }
+
     /// Hook that when enabled manually calls _beforeTokenTransfer on
     function _beforeTokenTransfer(
         address from,
@@ -104,7 +113,7 @@ contract ERC721Base is
     }
 
     /// Internal-only function to update the base uri
-    function setBaseURI(string memory uriBase, string memory uriExtension)
+    function __setBaseURI(string memory uriBase, string memory uriExtension)
         public
         override
         onlyInternal
@@ -121,10 +130,15 @@ contract ERC721Base is
     }
 
     /**
+      Internal-only
       @param to address to send the newly minted NFT to
       @dev This mints one edition to the given address by an allowed minter on the edition instance.
      */
-    function mint(address to, uint256 tokenId) external override onlyInternal {
+    function __mint(address to, uint256 tokenId)
+        external
+        override
+        onlyInternal
+    {
         _mint(to, tokenId);
         mintedCounter.increment();
     }
@@ -133,8 +147,14 @@ contract ERC721Base is
         @param tokenId Token ID to burn
         User burn function for token id 
      */
-    function burn(uint256 tokenId) public override {
+    function burn(uint256 tokenId) public {
         require(_isApprovedOrOwner(_msgSender(), tokenId), "Not allowed");
+        _burn(tokenId);
+        mintedCounter.decrement();
+    }
+
+    /// Internal only
+    function __burn(uint256 tokenId) public onlyInternal {
         _burn(tokenId);
         mintedCounter.decrement();
     }
@@ -145,10 +165,15 @@ contract ERC721Base is
     function owner()
         public
         view
-        override(OwnableUpgradeable, IBaseInterface)
+        override(OwnableUpgradeable)
         returns (address)
     {
         return super.owner();
+    }
+
+    /// internal alias for overrides
+    function __owner() public view override(IBaseInterface) returns (address) {
+        return owner();
     }
 
     /// Get royalty information for token
@@ -167,7 +192,7 @@ contract ERC721Base is
         return (owner(), (_salePrice * advancedConfig.royaltyBps) / 10_000);
     }
 
-    /// Default simple token-uri implementation. works for ipfs folders too 
+    /// Default simple token-uri implementation. works for ipfs folders too
     /// @param tokenId token id ot get uri for
     /// @return default uri getter functionality
     function tokenURI(uint256 tokenId)
@@ -188,21 +213,35 @@ contract ERC721Base is
             );
     }
 
-    /// Exposing token exists check for base contract 
-    function exists(uint256 tokenId) external view override returns (bool) {
-        return _exists(tokenId);
+    /// internal base override
+    function __tokenURI(uint256 tokenId)
+        public
+        view
+        onlyInternal
+        returns (string memory)
+    {
+        return tokenURI(tokenId);
     }
 
-    /// Override for approved or owner to include internal contract functions
-    function isApprovedOrOwner(address spender, uint256 tokenId)
+    /// Exposing token exists check for base contract
+    function __exists(uint256 tokenId)
         external
         view
         override
         returns (bool)
     {
-        // contract itself has admin capabilities
-        return
-            _isApprovedOrOwner(spender, tokenId) || msg.sender == address(this);
+        return _exists(tokenId);
+    }
+
+    /// Getter for approved or owner
+    function __isApprovedOrOwner(address spender, uint256 tokenId)
+        external
+        view
+        override
+        onlyInternal
+        returns (bool)
+    {
+        return _isApprovedOrOwner(spender, tokenId);
     }
 
     /// IERC165 getter
