@@ -26,20 +26,14 @@ The deployed base contract OpenZeppelin code can be used to be the underlying im
 
 ## Getting started
 
-1. Clone this repository (will publish on NPM after further review)
-2. Choose a contract to start off in the [`/contracts/examples/`](/contracts/examples) folder
-3. Update the deploy folder with your contract information
-4. Set base NFT contract address in [`hardhat.config.ts`](/hardhat.config.ts)
+1. Clone the example repository: https://github.com/iainnash/example-gwei-optimized-minting-contract
+2. Update the contract code with your custom NFT contract information
+4. Ensure base NFT contract address is set in [`hardhat.config.ts`](/hardhat.config.ts) for your network
 5. `hardhat deploy --network NETWORK --tags MY_CONTRACT` replacing YOUR_CONTRACT with your contract and NETWORK with the desired network.
-
-## What still needs to be done?
-
-1. Better testing and security review
-2. Deploy `ERC721Base` to mainnet and update address of deployment in this repo.
 
 ## Current Deployments:
 
-- Mainnet: Not yet
+- Mainnet: [0x43955024b1985E2b933A59021500aE5f55b04091](https://etherscan.io/address/0x43955024b1985e2b933a59021500ae5f55b04091)
 
 - Rinkeby: [0x3Be479A0e8D5732BE5051Bfe6833CC98722f2C1b](https://rinkeby.etherscan.io/address/0x3Be479A0e8D5732BE5051Bfe6833CC98722f2C1b)
 
@@ -61,7 +55,7 @@ The deployed base contract OpenZeppelin code can be used to be the underlying im
 
 Things you now can get for no additional gas when writing your own NFT contracts:
 
-0. 3.5x (!) lower deployment cost in gas
+0. 4x (!) lower deployment cost in gas
 1. ERC2981 built-in option to enable, more complex usages can override the reading function
 2. URI + ID functionality built-in, able to override and reset base URIs
 3. Ability to gate transfer, burn, mint, or disable certain functionality when needed
