@@ -47,6 +47,12 @@ contract ERC721Delegated {
 
     // helpers to mimic Openzeppelin internal functions
 
+    /// Getter for the contract owner
+    /// @return address owner address
+    function _owner() internal returns (address) {
+      return base().__owner();
+    }
+
     /// Internal burn function, only accessible from within contract
     /// @param id nft id to burn
     function _burn(uint256 id) internal {
