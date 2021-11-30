@@ -66,6 +66,19 @@ contract ERC721Delegated {
         return base().__exists(id);
     }
 
+    /// Internal getter for tokenURI
+    /// @param tokenId id of token to get tokenURI for
+    function _tokenURI(uint256 tokenId) internal view returns (string memory) {
+        return base().__tokenURI(tokenId);
+    }
+
+    /// is approved for all getter underlying getter
+    /// @param owner to check
+    /// @param operator to check
+    function _isApprovedForAll(address owner, address operator) internal view returns (bool) {
+        return base(). __isApprovedForAll(owner, operator);
+    }
+
     /// Internal getter for approved or owner for a given operator
     /// @param operator address of operator to check
     /// @param id id of nft to check for
