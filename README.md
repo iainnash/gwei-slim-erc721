@@ -35,13 +35,13 @@ The deployed base contract OpenZeppelin code can be used to be the underlying im
 
 - Mainnet: [0x43955024b1985E2b933A59021500aE5f55b04091](https://etherscan.io/address/0x43955024b1985e2b933a59021500ae5f55b04091)
 
-- Rinkeby: [0x3Be479A0e8D5732BE5051Bfe6833CC98722f2C1b](https://rinkeby.etherscan.io/address/0x3Be479A0e8D5732BE5051Bfe6833CC98722f2C1b)
+- Rinkeby: [0x86c67a16C16BF784BdFE7D4b7575dB664D191F88](https://rinkeby.etherscan.io/address/0x86c67a16C16BF784BdFE7D4b7575dB664D191F88)
 
 ## Example Contract Deployed
 
 - child implementation: https://rinkeby.etherscan.io/address/0x83FA6bfdF5920816a4cF9230D32049372F6E06eA
 
-- base: https://rinkeby.etherscan.io/address/0x3Be479A0e8D5732BE5051Bfe6833CC98722f2C1b
+- base: https://rinkeby.etherscan.io/address/0x86c67a16C16BF784BdFE7D4b7575dB664D191F88
 
 ## How do I get started?
 
