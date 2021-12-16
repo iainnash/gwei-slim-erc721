@@ -1,27 +1,41 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.8.9;
 
+import {StorageSlotUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/StorageSlotUpgradeable.sol";
+
 import {IBaseERC721Interface, ConfigSettings} from "./ERC721Base.sol";
 
 contract ERC721Delegated {
+    bytes32 internal constant _IMPLEMENTATION_SLOT =
+        0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc;
+
     // Reference to base NFT implementation
-    IBaseERC721Interface public nftImplementation;
+    function nftImplementation() public view returns (address) {
+        return
+            StorageSlotUpgradeable.getAddressSlot(_IMPLEMENTATION_SLOT).value;
+    }
+
+    function _initImplementation(address _nftImplementation) private {
+        StorageSlotUpgradeable
+            .getAddressSlot(_IMPLEMENTATION_SLOT)
+            .value = _nftImplementation;
+    }
 
     /// Constructor that sets up the
     constructor(
-        IBaseERC721Interface _nftImplementation,
+        address _nftImplementation,
         string memory name,
         string memory symbol,
         ConfigSettings memory settings
     ) {
-        nftImplementation = _nftImplementation;
         /// Removed for gas saving reasons, the check below implictly accomplishes this
         // require(
         //     _nftImplementation.supportsInterface(
         //         type(IBaseERC721Interface).interfaceId
         //     )
         // );
-        (bool success, ) = address(_nftImplementation).delegatecall(
+        _initImplementation(_nftImplementation);
+        (bool success, ) = nftImplementation().delegatecall(
             abi.encodeWithSignature(
                 "initialize(address,string,string,(uint16,string,string,bool))",
                 msg.sender,
@@ -50,7 +64,7 @@ contract ERC721Delegated {
     /// Getter for the contract owner
     /// @return address owner address
     function _owner() internal returns (address) {
-      return base().__owner();
+        return base().__owner();
     }
 
     /// Internal burn function, only accessible from within contract
@@ -81,8 +95,12 @@ contract ERC721Delegated {
     /// is approved for all getter underlying getter
     /// @param owner to check
     /// @param operator to check
-    function _isApprovedForAll(address owner, address operator) internal view returns (bool) {
-        return base(). __isApprovedForAll(owner, operator);
+    function _isApprovedForAll(address owner, address operator)
+        internal
+        view
+        returns (bool)
+    {
+        return base().__isApprovedForAll(owner, operator);
     }
 
     /// Internal getter for approved or owner for a given operator
@@ -111,7 +129,7 @@ contract ERC721Delegated {
      * This function does not return to its internall call site, it will return directly to the external caller.
      */
     function _fallback() internal virtual {
-        address impl = address(nftImplementation);
+        address impl = nftImplementation();
 
         assembly {
             // Copy msg.data. We take full control of memory in this inline assembly

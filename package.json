@@ -1,6 +1,6 @@
 {
   "name": "gwei-slim-nft-contracts",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "GWEI Slim NFT Base Contracts",
   "main": "index.js",
   "author": "iain nash",
