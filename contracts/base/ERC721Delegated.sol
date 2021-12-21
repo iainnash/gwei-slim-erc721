@@ -6,11 +6,12 @@ import {StorageSlotUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/
 import {IBaseERC721Interface, ConfigSettings} from "./ERC721Base.sol";
 
 contract ERC721Delegated {
+    uint256[100000] gap;
     bytes32 internal constant _IMPLEMENTATION_SLOT =
         0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc;
 
     // Reference to base NFT implementation
-    function nftImplementation() public view returns (address) {
+    function implementation() public view returns (address) {
         return
             StorageSlotUpgradeable.getAddressSlot(_IMPLEMENTATION_SLOT).value;
     }
@@ -129,7 +130,7 @@ contract ERC721Delegated {
      * This function does not return to its internall call site, it will return directly to the external caller.
      */
     function _fallback() internal virtual {
-        address impl = nftImplementation();
+        address impl = implementation();
 
         assembly {
             // Copy msg.data. We take full control of memory in this inline assembly
