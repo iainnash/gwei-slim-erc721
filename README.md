@@ -31,7 +31,7 @@ The deployed base contract OpenZeppelin code can be used to be the underlying im
 4. Ensure base NFT contract address is set in [`hardhat.config.ts`](/hardhat.config.ts) for your network
 5. `hardhat deploy --network NETWORK --tags MY_CONTRACT` replacing YOUR_CONTRACT with your contract and NETWORK with the desired network.
 
-## Current Deployments:
+## Current Base Contract Deployments:
 
 - Mainnet: [0x43955024b1985E2b933A59021500aE5f55b04091](https://etherscan.io/address/0x43955024b1985e2b933a59021500ae5f55b04091)
 
