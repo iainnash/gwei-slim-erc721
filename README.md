@@ -2,7 +2,7 @@
 
 | Contract | Deploy GWEI | % of block size |
 | :---: | :---: | :---: |
-| `OptimizedChildNFT` | **501,064** | 1.6% |
+| `OptimizedChildNFT` | **447,059** | 1.5% |
 | `ERC721Base` | 1,614,646 | 5.4%
 
 Deploy [your own](/contracts/examples/ChildNFTOnChainData.sol) on-chain metadata NFT contract for only ~500k gwei.
