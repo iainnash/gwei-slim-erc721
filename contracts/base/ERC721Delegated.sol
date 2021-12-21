@@ -35,7 +35,7 @@ contract ERC721Delegated {
         //     )
         // );
         _initImplementation(_nftImplementation);
-        (bool success, ) = nftImplementation().delegatecall(
+        (bool success, ) = _nftImplementation.delegatecall(
             abi.encodeWithSignature(
                 "initialize(address,string,string,(uint16,string,string,bool))",
                 msg.sender,
@@ -63,7 +63,7 @@ contract ERC721Delegated {
 
     /// Getter for the contract owner
     /// @return address owner address
-    function _owner() internal returns (address) {
+    function _owner() internal view returns (address) {
         return base().__owner();
     }
 
