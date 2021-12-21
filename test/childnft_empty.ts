@@ -36,6 +36,8 @@ describe("ChildNFTEmpty", () => {
   });
   it("burns", async () => {
     await childNft.adminMint();
+    const owner = await baseNft.ownerOf(1);
+    expect(owner).to.be.equal(signerAddress);
     await baseNft.burn(1);
   });
   it("does not burn for non-owner", async () => {

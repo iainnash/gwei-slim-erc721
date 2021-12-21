@@ -2,7 +2,7 @@
 pragma solidity 0.8.9;
 
 import {ERC721Delegated} from "../base/ERC721Delegated.sol";
-import {IBaseERC721Interface, ConfigSettings} from "../base/ERC721Base.sol";
+import {ConfigSettings} from "../base/ERC721Base.sol";
 
 import {CountersUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
 
@@ -13,7 +13,7 @@ contract ChildNFTPausable is ERC721Delegated {
     bool paused;
 
     constructor(
-        IBaseERC721Interface baseFactory,
+        address baseFactory,
         string memory name,
         string memory symbol
     )
